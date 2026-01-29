@@ -2,6 +2,6 @@ data-analysis-env/
 data/raw_concat/
 data/raw_official/
 data/raw_v1/
-data/csv/
+data/csv/*
 Group1_AI_log.pdf
 heading_page.pdf
