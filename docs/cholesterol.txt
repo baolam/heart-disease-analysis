@@ -1,0 +1,8 @@
+NCD_CHOL_MEANTOTALCHOL_A: Mean total cholesterol,  age-standardized
+
+NCD_CHOL_MEANNONHDL_A: Mean Non-HDL cholesterol, age-standardized
+
+NCD_CHOL_MEANHDL_A: Mean HDL cholesterol, age-standardized
+
+NCD_CCS_CHOL_SVY: Has conducted a recent, national adult risk factor survey covering raised total cholesterol
+

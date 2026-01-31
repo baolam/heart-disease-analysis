@@ -1,0 +1,26 @@
+UHC_INDEX_REPORTED: UHC Service Coverage Index (SDG 3.8.1)
+
+UHC_AVAILABILITY_SCORE: Primary data availability for UHC Service Coverage Index (SDG 3.8.1) (%)
+
+HSS_COMPREHENSIVEHEALTHPOLICY: Countries that have a comprehensive national health sector policy/ strategy/ plan with goals and targets updated within the last 5 years
+
+WHS7_103: Private prepaid plans as a percentage of private expenditure on health
+
+WHS6_102: Hospital beds (per 10 000 population)
+
+HCF_REL_ELECTRICITY: Percentage of health-care facilities with reliable electricity supply (%)
+
+HCF_UNREL_ELECTRICITY: Percentage of health-care facilities with unreliable electricity supply (%)
+
+HCF_NO_ELECTRICITY: Percentage of health-care facilities with no access to any electricity supply (%)
+
+HRH_26: Physicians density (per 1000 population)
+
+HRH_33: Nursing and midwifery personnel density (per 1000 population)
+
+UHC_HRHSURGEONDENSITY: Surgeons (per 100 000)
+
+HRH_40: Biomedical engineers density (per 10 000 population)
+
+WHS6_150: Community health workers density (per 10 000 population)
+

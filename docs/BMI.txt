@@ -1,0 +1,24 @@
+NCD_BMI_MEANC: Mean BMI (kg/m&#xb2;) (crude estimate)
+
+NCD_BMI_MEAN: Mean BMI (kg/m²) (age-standardized estimate)
+
+NCD_BMI_30C: Prevalence of obesity among adults, BMI &GreaterEqual; 30 (crude estimate) (%)
+
+NCD_BMI_18A: Prevalence of underweight among adults, BMI < 18 (age-standardized estimate) (%)
+
+NCD_BMI_18C: Prevalence of underweight among adults, BMI < 18 (crude estimate) (%)
+
+NCD_BMI_25A: Prevalence of overweight among adults, BMI &GreaterEqual; 25 (age-standardized estimate) (%)
+
+NCD_BMI_25C: Prevalence of overweight among adults, BMI &GreaterEqual; 25 (crude estimate) (%)
+
+NCD_BMI_30A: Prevalence of obesity among adults, BMI &GreaterEqual; 30 (age-standardized estimate) (%)
+
+NCD_BMI_30C: Prevalence of obesity among adults, BMI &GreaterEqual; 30 (crude estimate) (%)
+
+NCD_BMI_MINUS2C: Prevalence of thinness among children and adolescents, BMI < -2 standard deviations below the median (crude estimate) (%)
+
+NCD_BMI_PLUS1C: Prevalence of overweight among children and adolescents, BMI > +1 standard deviations above the median (crude estimate) (%)
+
+NCD_BMI_PLUS2C: Prevalence of obesity among children and adolescents, BMI > +2 standard deviations above the median (crude estimate) (%)
+

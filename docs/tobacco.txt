@@ -1,0 +1,6 @@
+M_Est_tob_curr_std: Estimate of current tobacco use prevalence (%) (age-standardized)
+
+M_Est_tob_curr_users: Number of current of tobacco users, estimate
+
+TOBACCO_MPOWER_OVERVIEW: Tobacco MPOWER overview: Monitor, Protect people, Offer help, Warn of dangers, Enforce bans, Raise taxes
+
