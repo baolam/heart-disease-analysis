@@ -1,8 +1,0 @@
-M_Est_tob_curr_std
-M_Est_smk_curr_std
-M_Est_tob_curr
-M_Est_smk_curr
-M_Est_tob_curr_users
-M_Est_smk_curr_users
-
-TOBACCO_MPOWER_OVERVIEW
