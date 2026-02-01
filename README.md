@@ -16,11 +16,26 @@ Dựa trên cấu trúc thư mục của dự án:
 
 ```text
 DATA_ANALYSIS/
-├── data/                  # Chứa các file dữ liệu thô và đã xử lý
-├── preprocessing/         # Các script xử lý dữ liệu và handler DB
-│   └── ...    # Script nạp dữ liệu vào cơ sở dữ liệu
-├── worldmap/              # Hình ảnh trực quan hóa bản đồ thế giới
-├── docs/                  # Tài liệu hướng dẫn và báo cáo dự án
-├── Physical_activities.ipynb    # Phân tích về các hoạt động thể chất
-├── collection_data_api.ipynb    # Code thu thập dữ liệu qua API
-└── auto-generate-log.py         # Script tự động tạo log cho dự án
+├── .ipynb_checkpoints/       # Lưu các bản backup của Jupyter Notebook
+├── data/                     # Quản lý dữ liệu dự án
+│   ├── csv/                  # Các tệp tin dữ liệu định dạng .csv
+│   ├── decision/             # Dữ liệu phục vụ việc ra quyết định/mô hình (chứa các tệp file là các indicators cuối cùng cho xử lí)
+│   ├── raw_concat/           # Dữ liệu thô sau khi được gộp (concatenate)
+│   ├── raw_official/         # Dữ liệu thô chính thức
+│   ├── raw_official_v2/      # Dữ liệu thô chính thức phiên bản 2
+│   ├── raw_v1/               # Dữ liệu thô phiên bản 1
+│   ├── urls/                 # Danh sách các đường dẫn nguồn dữ liệu
+│   └── raw_official_v2.zip   # Bản nén của dữ liệu chính thức
+├── data-analysis-env/        # Môi trường ảo (Virtual Environment) của dự án
+├── docs/                     # Tài liệu hướng dẫn và ghi chú
+│   └── .txt                  # Mô tả
+├── preprocessing/            # Quy trình tiền xử lý dữ liệu
+│   ├── .ipynb_checkpoints/
+│   ├── collection/           # Module thu thập dữ liệu
+│   ├── outlier/              # Xử lý các giá trị ngoại lệ (outliers)
+│   ├── visualization/        # Các script/notebook phục vụ trực quan hóa
+│   ├── CSV_utilization.ipynb # Notebook khai thác dữ liệu CSV
+│   ├── indicator_meaning.ipynb # Giải thích ý nghĩa các chỉ số y tế
+│   └── summary.ipynb         # Tổng hợp và thống kê dữ liệu
+└── worldmap/                 # Chứa thông tin về bản đồ thế giới
+    ├── ...
