@@ -109,6 +109,7 @@ illustrate_table = '''
         x6 REAL,
         x7 REAL,
         x8 REAL,
+        x9 REAL,
         SpatialDim TEXT,
         TimeDim INTEGER
     )
@@ -133,9 +134,9 @@ for country, _time in tqdm(product(countries, times), desc="Đang tạo mẫu", 
 
     # Định nghĩa một query insert dữ liệu
     query = '''INSERT INTO NearsestSample(
-        y, x1, x2, x3, x4, x5, x6, x7, x8,
+        y, x1, x2, x3, x4, x5, x6, x7, x8, x9,
         SpatialDim, TimeDim
-        ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'''
+        ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'''
     
     for sample in _samples:
         # Tiến hành điền dữ liệu theo các trường để tiến hành insert dữ liệu
@@ -144,11 +145,11 @@ for country, _time in tqdm(product(countries, times), desc="Đang tạo mẫu", 
             lookups[mapping_labels[_field_name]] = _num
 
         try:
-            sample_cursor.execute(query, (lookups['y'], lookups['x1'], lookups['x2'], lookups['x3'], lookups['x4'], lookups['x5'], lookups['x6'], lookups['x7'], lookups['x8'], country, _time))
+            sample_cursor.execute(query, (lookups['y'], lookups['x1'], lookups['x2'], lookups['x3'], lookups['x4'], lookups['x5'], lookups['x6'], lookups['x7'], lookups['x8'], lookups['x9'], country, _time))
         except Exception as e:
             print("Có lỗi phát sinh:", e)
 
-        output_ids.append(ids)
+    # output_ids.append(ids)
     # Kết thúc mỗi lần lọc cần ghi dữ liệu
     managed_samples.commit()
 
@@ -156,8 +157,8 @@ print("Tổng số sample: ", total_samples)
 
 # Tiến hành ghi file quản lí về ids
 # CSV nhãn đang bị lỗi, cần fix lại!!! )))
-id_frame = pd.DataFrame(output_ids)
-id_frame.to_csv('../../data/sample_strategy/nearest_sample.csv')
+# id_frame = pd.DataFrame(output_ids)
+# id_frame.to_csv('../../data/sample_strategy/nearest_sample.csv')
 
 conn.close()
 managed_samples.close()
