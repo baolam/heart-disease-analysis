@@ -33,4 +33,14 @@ print("Tổng số quốc gia chung là:", len(countries))
 print("Tổng số điểm thời gian chung là:", len(times))
 print("Các thời gian:", times)
 
+# Lấy các điểm dữ liệu trong đây làm mẫu ghép
+objective = tables[3]
+def generate_sample(spatial_dim, time_dim):
+    query = 'select * from cardiovascular_diseases where SpatialDim = ? AND TimeDim = ?'
+    result = cursor.execute(query, (spatial_dim, time_dim,))
+
+    for row in result:
+        print(row)
+
+generate_sample('VNM', 2010)
 conn.close()
