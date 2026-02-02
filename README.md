@@ -3,15 +3,18 @@
 Dự án này được xây dựng để phân tích sự ảnh hưởng của đa yếu tố (lối sống, di truyền, môi trường) đối với bệnh tim mạch, đồng thời sử dụng dữ liệu lịch sử để dự đoán xu hướng cho tương lai.
 
 ## 📋 Bài Toán Đặt Ra
+
 Nghiên cứu và trả lời các câu hỏi trọng tâm:
-* **Lối sống:** Các thói quen sinh hoạt và hoạt động thể chất ảnh hưởng thế nào?
-* **Di truyền:** Các đặc điểm bẩm sinh chi phối tỉ lệ mắc bệnh ra sao?
-* **Môi trường:** Y tế và môi trường sống đóng vai trò gì?
-* **Dự báo:** Dựa trên dữ liệu lịch sử để phán đoán % chi phối của các yếu tố này trong năm tiếp theo.
+
+- **Lối sống:** Các thói quen sinh hoạt và hoạt động thể chất ảnh hưởng thế nào?
+- **Di truyền:** Các đặc điểm bẩm sinh chi phối tỉ lệ mắc bệnh ra sao?
+- **Môi trường:** Y tế và môi trường sống đóng vai trò gì?
+- **Dự báo:** Dựa trên dữ liệu lịch sử để phán đoán % chi phối của các yếu tố này trong năm tiếp theo.
 
 ---
 
 ## 📂 Cấu Trúc Dự Án
+
 Dựa trên cấu trúc thư mục của dự án:
 
 ```text
@@ -39,3 +42,4 @@ DATA_ANALYSIS/
 │   └── summary.ipynb         # Tổng hợp và thống kê dữ liệu
 └── worldmap/                 # Chứa thông tin về bản đồ thế giới
     ├── ...
+```
