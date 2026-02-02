@@ -6,5 +6,7 @@ data/raw_v1/
 data/csv/*
 data/raw_official_v2.zip
 data/database.db
+data/samples.db
+data/sample_strategy/*
 Group1_AI_log.pdf
 heading_page.pdf
