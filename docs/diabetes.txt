@@ -1,0 +1,38 @@
+NCD_DIABETES_PREVALENCE_AGESTD: Prevalence of diabetes, age-standardized
+
+NCD_DIABETES_PREVALENCE_CRUDE: Prevalence of diabetes, crude
+
+NCD_DIABETES_TREATMENT_AGESTD: Diabetes treatment coverage, age-standardized
+
+NCD_DIABETES_TREATMENT_CRUDE: Diabetes treatment coverage, crude
+
+SA_0000001421: Age-standardized DALYs, diabetes mellitus, per 100,000
+
+SA_0000001440: Age-standardized death rates, diabetes mellitus, per 100,000
+
+NCD_CCS_DiabPlan: Existence of operational policy/strategy/action plan for diabetes
+
+NCD_CCS_DIAB_GUIDE: Existence of evidence-based national guidelines/protocols/standards for the management of diabetes
+
+NCD_CCS_DiabetesReg: Existence of a diabetes registry
+
+NCD_CCS_HbA1c: General availability of diabetes testing (by HbA1c) at the primary health care level
+
+NCD_CCS_diabtest: General availability of diabetes testing (by blood glucose measurement, OGTT) at the primary health care level
+
+NCD_CCS_DiabetesTest: General availability of diabetes testing (by blood glucose measurement, OGTT, or HbA1c) at the primary health care level
+
+NCD_CCS_DIAB_SVY: Has conducted a recent, national adult risk factor survey covering raised blood glucose/diabetes
+
+NCD_GLUC_01: Mean fasting blood glucose (mmol/l) (age-standardized estimate)
+
+NCD_GLUC_02: Mean fasting blood glucose (mmol/l) (crude estimate)
+
+NCD_CCS_DIAB_TARGET: Existence of a national target on diabetes
+
+NCDMORT3070: Probability (%) of dying between age 30 and exact age 70 from any of cardiovascular disease, cancer, diabetes, or chronic respiratory disease
+
+NCD_GLUC_04: Raised fasting blood glucose (>=7.0 mmol/L) (age-standardized estimate)
+
+NCD_GLUC_03: Raised fasting blood glucose (>= 7.0 mmol/L) (crude estimate)
+
