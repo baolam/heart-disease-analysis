@@ -1,0 +1,4 @@
+NCD_GLUC_01: Mean fasting blood glucose (mmol/l) (age-standardized estimate)
+
+NCD_GLUC_04: Raised fasting blood glucose (>=7.0 mmol/L) (age-standardized estimate)
+
