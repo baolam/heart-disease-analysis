@@ -1,14 +1,14 @@
 SA_0000001760: 15-19 years old total alcohol consumption in litres of pure alcohol
 
-SA_0000001781_ARCHIVED: 15-years old any alcoholic beverage consumed in past 12 months, (%)
+SA_0000001781: 15-years old any alcoholic beverage consumed in past 12 months, (%)
 
 SA_0000001783: 15-years old any alcoholic beverage consumed in past 30 days, (%)
 
-SA_0000001736_ARCHIVED: Action Plan for implementation of alcohol policy
+SA_0000001736: Action Plan for implementation of alcohol policy
 
-SA_0000001502_ARCHIVED: Adopted written national policy on alcohol
+SA_0000001502: Adopted written national policy on alcohol
 
-SA_0000001697: Adopted written national policy on alcohol, year adopted
+SA_0000001697_ARCHIVED: Adopted written national policy on alcohol, year adopted
 
 SA_0000001698: Adopted written national policy on alcohol, year revised
 
@@ -18,7 +18,7 @@ SA_0000001418: Age-standardized DALYs, alcohol use disorders, per 100,000
 
 SA_0000001456: Age-standardized death rates (15+ years), alcoholic liver disease, per 100,000
 
-RSUD_33: Sector for residential long-term rehabilitation of alcohol use disorders
+RSUD_3: Age-standardized death rates, alcohol and drug use disorders, per 100 000
 
 SA_0000001437: Age-standardized death rates, alcohol use disorders, per 100,000
 
@@ -38,21 +38,21 @@ SA_0000001842: Alcohol, 15-19 years heavy continuous drinkers, drinkers only, pa
 
 SA_0000001409: Alcohol, abstainers lifetime (%), age-standardized
 
-SA_0000001411_ARCHIVED: Alcohol, abstainers past 12 months (%)
+SA_0000001411: Alcohol, abstainers past 12 months (%), age-standardized
 
 SA_0000001751: Alcohol, average daily intake in grams among drinkers, three-year average
 
-SA_0000001413_ARCHIVED: Alcohol, consumers past 12 months (%)
+SA_0000001413: Alcohol, consumers past 12 months (%), age-standardized
 
-SA_0000001398_ARCHIVED: Alcohol, consumption of pure alcohol by type of beverage (%)
+SA_0000001398: Alcohol, consumption of pure alcohol by type of beverage (%)
 
 SA_0000001404: Alcohol, drinkers only per capita (15+) consumption in litres of pure alcohol, three-year average
 
-SA_0000001402_ARCHIVED: Alcohol, estimate of five-year change in recorded per capita (15+) consumption 2006-2010
+SA_0000001402: Alcohol, estimate of five-year change in recorded per capita (15+) consumption 2006-2010
 
 SA_0000001414_ARCHIVED: Alcohol, former drinkers (%)
 
-SA_0000001754_ARCHIVED: Alcohol, harmful use (15+), 12 month prevalence (%) with 95%CI
+SA_0000001754: Alcohol, harmful use (15+), 12 month prevalence (%) with 95%CI
 
 SA_0000001839: Alcohol, heavy continuous drinkers past year (%)
 
@@ -64,11 +64,11 @@ SA_0000001416: Alcohol, heavy episodic drinking (15+), drinkers only, past 30 da
 
 SA_0000001417: Alcohol, patterns of drinking score
 
-SA_0000001400: Alcohol, recorded per capita (15+) consumption (in litres of pure alcohol), by beverage type
+SA_0000001400_ARCHIVED: Alcohol, recorded per capita (15+) consumption (in litres of pure alcohol)
 
-SA_0000001747_ARCHIVED: Alcohol, recorded per capita (15+) consumption (in litres of pure alcohol), three-year average with 95%CI
+SA_0000001747: Alcohol, recorded per capita (15+) consumption (in litres of pure alcohol), three-year average
 
-SA_0000001401: Alcohol, recorded per capita (15+) consumption (in litres of pure alcohol), three-year average
+SA_0000001401_ARCHIVED: Alcohol, recorded per capita (15+) consumption (in litres of pure alcohol), three-year average
 
 SA_0000001746: Alcohol, total  (recorded + unrecorded) per capita (15+) consumption with 95%CI, projections to 2025
 
@@ -84,15 +84,15 @@ SA_0000001822_ARCHIVED: Alcohol, total per capita (15+) consumption (in litres o
 
 SA_0000001818: Alcohol, total  (recorded + unrecorded) per capita (15+) consumption, projections
 
-SA_0000001405: Alcohol, tourist consumption (in litres of pure alcohol)
+SA_0000001405_ARCHIVED: Alcohol, tourist consumption (in litres of pure alcohol)
 
-SA_0000001823_ARCHIVED: Alcohol, tourist consumption (in litres of pure alcohol)
+SA_0000001823: Alcohol, tourist consumption (in litres of pure alcohol), three-year average
 
 SA_0000001406_ARCHIVED: Alcohol, unrecorded per capita (15+) consumption (in litres of pure alcohol)
 
 SA_0000001748: Alcohol, unrecorded per capita (15+) consumption (in litres of pure alcohol) with 95%CI
 
-SA_0000001821_ARCHIVED: Alcohol, unrecorded per capita (15+) consumption (in litres of pure alcohol) with 95%CI
+SA_0000001821: Alcohol, unrecorded per capita (15+) consumption (in litres of pure alcohol), three-year average
 
 SA_0000001843: Alcohol-attributable DALYs lost from all causes (all ages), (number)
 
@@ -106,9 +106,9 @@ SA_0000001832: Alcohol-attributable all-cause deaths per 100,000, age standardiz
 
 SA_0000001808: Alcohol-attributable fractions (15+), cancer deaths
 
-SA_0000001741_ARCHIVED: Alcohol-attributable fractions (15+), liver cirrhosis deaths (%)
+SA_0000001741: Alcohol-attributable fractions (15+), liver cirrhosis deaths (%)
 
-SA_0000001742: Alcohol-attributable fractions (15+), road traffic crash deaths (%)
+SA_0000001742_ARCHIVED: Alcohol-attributable fractions (15+), road traffic crash deaths (%)
 
 SA_0000001743_ARCHIVED: Alcohol-attributable fractions, all-cause deaths (%)
 
@@ -116,7 +116,7 @@ SA_0000001472: Alcohol-related injury mortality, per 1,000
 
 SA_0000001471: Alcohol-related road traffic crashes (% of all traffic crashes)
 
-SA_0000001696: Alcohol-related road traffic crashes with fatalities (% of all road traffic crashes with fatalities)
+SA_0000001696_ARCHIVED: Alcohol-related road traffic crashes with fatalities (% of all road traffic crashes with fatalities)
 
 SA_0000001503_ARCHIVED: Alcoholic beverage legally defined
 
@@ -160,7 +160,7 @@ NCD_CCS_AlcPlan: Existence of operational policy/strategy/action plan to reduce 
 
 RSUD_270: Financing methods for treatment for alcohol use disorders
 
-SA_0000001692_ARCHIVED: Framework of national alcohol policy
+SA_0000001692: Framework of national alcohol policy
 
 RSUD_270: Financing methods for treatment for alcohol use disorders
 
@@ -192,7 +192,7 @@ SA_0000001520: Legal blood alcohol concentration (BAC) limits
 
 SA_0000001767: Legislation on alcohol testing at workplaces
 
-SA_0000001693: Level of adoption of national alcohol policy
+SA_0000001693_ARCHIVED: Level of adoption of national alcohol policy
 
 SA_0000001794: Licensing required for exports of alcoholic beverages
 
@@ -222,15 +222,15 @@ SA_0000001762: National guidelines for alcohol problem prevention and counsellin
 
 SA_0000001761: National guidelines for the prevention and reduction of alcohol-related harm in schools
 
-SA_0000001506_ARCHIVED: National legislation to prevent illegal alcohol
+SA_0000001506: National legislation to prevent illegal alcohol
 
 SA_0000001792: National legislation to prevent illegal alcohol sales
 
 SA_0000001813: National organization for monitoring alcohol
 
-SA_0000001773: National surveys on adult alcohol consumption
+SA_0000001773_ARCHIVED: National surveys on adult alcohol consumption
 
-SA_0000001774_ARCHIVED: National surveys on youth alcohol consumption
+SA_0000001774: National surveys on youth alcohol consumption
 
 SA_0000001809: National system of epidemiological data collection for alcohol use
 
@@ -262,7 +262,7 @@ RSUD_590: Prevention programmes for specific populations for alcohol
 
 SA_0000001717: Prevention/counselling at workplaces for those with alcohol problems
 
-SA_0000001523: Prices for alcoholic beverages (average, US$)
+SA_0000001523_ARCHIVED: Prices for alcoholic beverages (average, US$)
 
 SA_0000001711: Public funds designated for alcohol research/monitoring programmes, in Euros
 
@@ -274,21 +274,21 @@ RSUD_480: Registration of medications for alcohol dependence and withdrawal
 
 SA_0000001812: Report with data from health services on alcohol use and AUDs
 
-SA_0000001553_ARCHIVED: Restrictions on alcohol use in public places
+SA_0000001553: Restrictions on alcohol use in public places
 
-SA_0000001541: Restrictions on sales promotion from owners of pubs and bars (alcohol for free)
+SA_0000001541_ARCHIVED: Restrictions on sales promotion from owners of pubs and bars (alcohol for free)
 
 SA_0000001459_AA: Road traffic crash deaths, alcohol-attributable, age-standardized death rates, per 100,000 population
 
-RSUD_290: Hypothecated taxes to be spent on prevention and treatment for substance use disorders
+RSUD_29: Sector for inpatient detoxification of alcohol use disorders
 
 RSUD_30: Sector for inpatient treatment of alcohol dependence
 
-RSUD_31: Sector for outpatient treatment of alcohol dependence
+RSUD_310: Government benefits for people with drug use disorders
 
 RSUD_33: Sector for residential long-term rehabilitation of alcohol use disorders
 
-RSUD_320: Main sector for treatment for alcohol use disorders
+RSUD_32: Sector for the treatment of alcohol-induced psychoses and other alcohol-induced psychiatric conditions
 
 SA_0000001694: Sectors represented in national alcohol policy
 
@@ -328,25 +328,25 @@ RSUD_210: Voluntary treatment for people with alcohol use disorders in the crimi
 
 SA_0000001786: 13-15-years old any alcoholic beverage consumed in past 30 days, (%)
 
-SA_0000001504_ARCHIVED: Alcohol use is banned
+SA_0000001504: Alcohol use is banned
 
-RSUD_44: Treatment slots for alcohol and drug use disorders, outpatient, per 10 000
+RSUD_440: Pharmacotherapy with buprenorphine
 
 SA_0000001470_ARCHIVED: Alcohol-related road traffic crashes, per 100,000 population
 
-SA_0000001475: Annual revenues from alcohol excise tax in millions US$
+SA_0000001475_ARCHIVED: Annual revenues from alcohol excise tax in millions US$
 
 SA_0000001788: Alcohol-related road traffic crashes with fatalities, per 100,000  population
 
-SA_0000001789_ARCHIVED: Alcohol-related crimes (% of all crimes)
+SA_0000001789: Alcohol-related crimes (% of all crimes)
 
 SA_0000001473: Alcohol-related disease mortality, per 100,000 (15+ years)
 
 SA_0000001824: Alcohol, regional alcohol per capita (15+) consumption (in litres of pure alcohol)
 
-SA_0000001737: Alcohol, regional per capita (15+) consumption (in litres of pure alcohol)
+SA_0000001737_ARCHIVED: Alcohol, regional per capita (15+) consumption (in litres of pure alcohol)
 
-SA_0000001744: Alcohol, regional prevalence of alcohol dependence (%)
+SA_0000001744_ARCHIVED: Alcohol, regional prevalence of alcohol dependence (%)
 
-SA_0000001745_ARCHIVED: Alcohol, regional prevalence of alcohol use disorders (%)
+SA_0000001745: Alcohol, regional prevalence of alcohol use disorders (%)
 
