@@ -1,0 +1,6 @@
+NCD_PAC_ADO: Insufficiently active (crude estimate)
+
+NCD_PAA: Prevalence of insufficient physical activity among adults aged 18+ years (age-standardized estimate) (%)
+
+NCD_PAC_ADO: Insufficiently active (crude estimate)
+
