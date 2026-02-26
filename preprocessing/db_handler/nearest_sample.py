@@ -17,11 +17,13 @@ mapping_labels = dict()
 for i, field in enumerate(tables):
     mapping_labels[field] = labels[i]
 
-def get_common_value(field):
+def get_common_value(field, excludes=['infrastructure']):
     print("Xử lý trường:", field)
     temps = []
 
     for table in tables:
+        if table in excludes:
+            continue
         query = 'select distinct ' + field + ' from ' + table
         tempo = cursor.execute(query)
 
@@ -30,7 +32,7 @@ def get_common_value(field):
             _result.add(row[0])
             temps.append(_result)
 
-        print(table, ':', len(_result))
+        print(table, ':', len(_result), '->')
 
     output : set = temps[0]
     for temp in temps[1:]:
@@ -40,7 +42,8 @@ def get_common_value(field):
     return output
     
 countries = list(get_common_value('SpatialDim'))
-times = list(get_common_value('TimeDim'))
+times = list(get_common_value('TimeDimensionBegin'))
+# times = [2010, 2011, 2012, 2013, 2014]
 
 print("Tổng số quốc gia chung là:", len(countries))
 print("Tổng số điểm thời gian chung là:", len(times))
@@ -52,7 +55,7 @@ def generate_sample(spatial_dim, time_dim, exclude = 'cardiovascular_diseases'):
     supports = tables.copy()
     supports.remove(exclude)
 
-    main_query = f'select id, NumericValue from {exclude} where SpatialDim = ? AND TimeDim = ?'
+    main_query = f'select id, NumericValue from {exclude} where SpatialDim = ? AND TimeDimensionBegin = ?'
     main_ids = cursor.execute(main_query, (spatial_dim, time_dim,))
 
     num_points = 0
@@ -65,7 +68,7 @@ def generate_sample(spatial_dim, time_dim, exclude = 'cardiovascular_diseases'):
         num_points += 1
 
     for support in supports:
-        query = f'select id, NumericValue from {support} where SpatialDim = ? AND TimeDim = ?'
+        query = f'select id, NumericValue from {support} where SpatialDim = ? AND TimeDimensionBegin = ?'
         characters = cursor.execute(query, (spatial_dim, time_dim,))
 
         last_id, last_value = -1, -1

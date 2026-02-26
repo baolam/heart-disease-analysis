@@ -10,10 +10,24 @@ conn = sqlite3.connect("../../data/database.db")
 # Tiến hành insert dữ liệu vào database dựa theo trường thời gian Date (
 # ràng buộc cập nhật (thứ tự thêm vào là thứ tự xuất hiện)
 #)
-def insert_data_to_db(table_name, filename, connection : Connection):
+
+# Bổ sung lấy dữ liệu chỉ có Indicator được chỉ định
+
+def insert_data_to_db(table_name, filename, constraint, connection : Connection):
+    accepted_indicators = []
+    with open(constraint, "r", encoding="utf-8") as f:
+        for line in f:
+            accepted_indicators.append(line.strip())
+    
     print("Chuẩn bị đọc:", filename)
+    print("Cho phép indicators:", accepted_indicators)
     df = pd.read_json(filename)
     print("Hoàn thành đọc:", filename)
+
+    # TIến hành lọc loại bỏ Indicators
+    if len(accepted_indicators) > 0:
+        df = df[df["IndicatorCode"].isin(accepted_indicators)].copy()
+    print("Giữ lại Indicators:", df["IndicatorCode"].unique())
 
     # Tiến hành một số bước xử lý
     # Sắp xếp lại thời gian xuất hiện của dữ liệu
@@ -76,8 +90,9 @@ def insert_data_to_db(table_name, filename, connection : Connection):
 
 # Thử nghiệm thao tác
 TARGET_FOLDER = "../../data/raw_concat/"
+CONSTRAINT_FOLDER = "../../data/url_fd/"
 for filename in os.listdir(TARGET_FOLDER):
     tablename = filename.split('.')[0]
-    insert_data_to_db(tablename, TARGET_FOLDER + filename, conn)
+    insert_data_to_db(tablename, TARGET_FOLDER + filename, CONSTRAINT_FOLDER + tablename + '.txt', conn)
 conn.commit()
 conn.close()
