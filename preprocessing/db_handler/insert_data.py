@@ -5,7 +5,7 @@ import pandas as pd
 from tqdm import tqdm
 from sqlite3 import Connection
 
-conn = sqlite3.connect("../../data/database.db")
+conn = sqlite3.connect("../../data/database_v3.db")
 
 # Tiến hành insert dữ liệu vào database dựa theo trường thời gian Date (
 # ràng buộc cập nhật (thứ tự thêm vào là thứ tự xuất hiện)

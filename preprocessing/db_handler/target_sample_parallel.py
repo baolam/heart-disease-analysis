@@ -5,8 +5,8 @@ from collections import defaultdict
 import os
 
 # --- CẤU HÌNH ĐƯỜNG DẪN ---
-SOURCE_DB = "../../data/database.db"
-TARGET_DB = "../../data/sample_strategy/sample_v3.db"
+SOURCE_DB = "../../data/database_v3.db"
+TARGET_DB = "../../data/sample_strategy/sample_v4.db"
 MAX_WORKERS = 8  # Tùy số nhân CPU của bạn (nên từ 4-8)
 
 # --- THIẾT LẬP NHÃN ---
@@ -36,7 +36,9 @@ def worker_task(spatial_dim, thread_pos):
         targets = local_cursor.execute(main_query, (spatial_dim,)).fetchall()
 
         all_ids, all_rows = [], []
+        
         counters = defaultdict(int)
+        last_feature = defaultdict(float)
 
         # 2. Thanh tiến trình con cho từng quốc gia
         with tqdm(total=len(targets), desc=f" └─ {spatial_dim[:10]}", 
@@ -66,6 +68,15 @@ def worker_task(spatial_dim, thread_pos):
                         _ids.append(res[0])
                         _features.append(res[1])
                         _belongs.append(support)
+
+                        # Ghi nhận mẫu data cuối
+                        last_feature[label] = (res[0], res[1], support)
+                    
+                    if not res and label in last_feature:
+                        _id, _feature, _belong = last_feature[label]
+                        _ids.append(_id)
+                        _features.append(_feature)
+                        _belongs.append(_belong)
 
                 # Gộp dữ liệu bảng chính
                 _ids.append(t_id)
