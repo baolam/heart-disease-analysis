@@ -1,6 +1,6 @@
 AIR_10: Ambient air pollution  attributable DALYs per 100'000 children under 5 years
 
-AIR_63: Household and ambient air pollution attributable DALYs in children under 5 years ('000)
+AIR_6: Ambient air pollution  attributable deaths per 100'000 children under 5 years
 
 AIR_7: Ambient air pollution attributable DALYs
 
@@ -18,7 +18,7 @@ AIR_73: Ambient air pollution attributable YLL in children under 15 years
 
 AIR_45: Ambient air pollution attributable YLLs
 
-AIR_50: Ambient air pollution attributable deaths (per 100 000 population, age-standardized)
+AIR_5: Ambient air pollution attributable death rate (per 100 000 population)
 
 AIR_42: Ambient air pollution attributable death rate (per 100 000 population, age-standardized)
 
@@ -26,7 +26,7 @@ AIR_41: Ambient air pollution attributable deaths
 
 AIR_72: Ambient air pollution attributable deaths in children under 15 years
 
-AIR_41: Ambient air pollution attributable deaths
+AIR_42: Ambient air pollution attributable death rate (per 100 000 population, age-standardized)
 
 SDGAIRBOD: Ambient and household air pollution attributable death rate (per 100 000 population)
 
