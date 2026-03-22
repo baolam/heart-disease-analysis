@@ -525,7 +525,7 @@ elif page == "📈 Visualization":
     """, conn_viz); conn_viz.close()
     country_names = {
         'LTU':'Lithuania','HRV':'Croatia','BLR':'Belarus','PRY':'Paraguay',
-        'RUS':'Nga','KAZ':'Kazakhstan','MDA':'Moldova',
+        'RUS':'Russia','KAZ':'Kazakhstan','MDA':'Moldova',
         'LVA':'Latvia','MNG':'Mongolia','ROU':'Romania'
     }
     df_top['label'] = df_top['country'].map(lambda x: country_names.get(x, x))
@@ -671,8 +671,8 @@ elif page == "🤖 Modeling":
 
     col1, col2 = st.columns(2)
     models_list = ['Linear Regression','Decision Tree','Random Forest','XGBoost','Extra Trees']
-    mse_vals    = [1044.76, 296.20, 157.60, 202.66, 136.10]
-    r2_vals     = [0.1796,  0.7674, 0.8762, 0.8409, 0.8931]
+    mse_vals    = [12.53, 9.79, 9.49, 8.31, 10.25]
+    r2_vals     = [0.0956,  0.4477, 0.4808, 0.6020, 0.3950]
     bar_colors  = ['#f87171','#f59e0b','#60a5fa','#60a5fa','#4ade80']
 
     with col1:
@@ -688,8 +688,8 @@ elif page == "🤖 Modeling":
         axes[0].grid(True, axis='x', alpha=0.4)
         # MSE
         axes[1].barh(models_list, mse_vals, color=bar_colors, height=0.55)
-        axes[1].set_xlabel('MSE', fontsize=9.5)
-        axes[1].set_title('Mean Squared Error', fontsize=10, fontweight='bold', color='#212529')
+        axes[1].set_xlabel('RMSE', fontsize=9.5)
+        axes[1].set_title('Root Mean Squared Error', fontsize=10, fontweight='bold', color='#212529')
         for i, v in enumerate(mse_vals):
             axes[1].text(v+5, i, f'{v:.1f}', va='center', fontsize=8, color='#212529')
         axes[1].spines['top'].set_visible(False); axes[1].spines['right'].set_visible(False)
