@@ -1,0 +1,18 @@
+# Giao diện & Hệ thống
+
+streamlit
+
+# Xử lý dữ liệu
+
+pandas
+numpy
+
+# Trực quan hóa dữ liệu
+
+matplotlib
+seaborn
+
+# Học máy (Machine Learning)
+
+scikit-learn
+xgboost
