@@ -773,9 +773,9 @@ elif page == "🔍 EDA":
         st.markdown("""
         <div class="insight-box" style="margin-top:30px;">
             <strong>Decision to Exclude Infrastructure Features</strong><br><br>
-            x7 thiếu <strong>77.09%</strong> (8.446/10.956 records) —
+            x7 lacks <strong>77.09%</strong> (8.446/10.956 records) —
             Imputation would introduce significant bias.<br><br>
-            Giải pháp: <strong>Completely excluded</strong> from the feature set.
+            Solutions: <strong>Completely excluded</strong> from the feature set.
         </div>""", unsafe_allow_html=True)
 
     st.markdown('<div class="section-title">Preprocessing Pipeline</div>', unsafe_allow_html=True)
