@@ -210,7 +210,7 @@ def train_all_models(_df):
 # ─────────────────────────────────────────────
 try:
     df = load_and_preprocess()
-    results, models, scaler = train_all_models(df)
+    # results, models, scaler = train_all_models(df)
 except Exception as e:
     st.error(f"⚠️ Unable to load database: {e}")
     st.stop()
