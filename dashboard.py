@@ -368,6 +368,7 @@ if page == "📊 Overview":
     #     fig_pie.update_layout(margin=dict(l=20, r=20, t=50, b=20), height=350)
     #     st.plotly_chart(fig_pie, use_container_width=True)
 
+    st.markdown('<div class="section-title">Relationship between features and target</div>', unsafe_allow_html=True)
     features_all = feature_names + ['cardiovascular_diseases']
     corr_matrix = df[features_all].corr() # Lưu ý: Tương quan không đổi khi dùng StandardScaler nên có thể dùng trực tiếp df
 
