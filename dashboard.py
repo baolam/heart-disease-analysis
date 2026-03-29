@@ -433,6 +433,7 @@ if page == "📊 Overview":
 
         labels.append(labels.pop())
         values.append(values.pop())
+        print(labels, values)
 
         # 2. Vẽ biểu đồ bằng Plotly
         fig = px.pie(
@@ -448,7 +449,8 @@ if page == "📊 Overview":
             textfont_size=12,
             textfont_color='white',
             marker=dict(line=dict(width=2.5, color="black")), # Giống wedgeprops
-            hovertemplate="<b>%{label}</b><br>Tỷ lệ: %{percent:.2%}<br>Giá trị: %{value}<extra></extra>"
+            hovertemplate="<b>%{label}</b><br>Tỷ lệ: %{percent:.2%}<br>Giá trị: %{value}<extra></extra>",
+            sort=False
         )
 
         # 4. Thiết lập bố cục (Layout)
