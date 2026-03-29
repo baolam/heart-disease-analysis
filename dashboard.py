@@ -390,7 +390,7 @@ if page == "📊 Overview":
 
     for i in range(len(fig.layout.annotations)):
         fig.layout.annotations[i].font.color = 'black'  # Màu đen
-        fig.layout.annotations[i].font.size = 12       # Chỉnh kích thước to hơn một chút cho dễ nhìn
+        fig.layout.annotations[i].font.size = 16       # Chỉnh kích thước to hơn một chút cho dễ nhìn
         # Sử dụng thẻ <b> để làm đậm nội dung chữ
         current_text = fig.layout.annotations[i].text
         fig.layout.annotations[i].text = f"<b>{current_text}</b>"
