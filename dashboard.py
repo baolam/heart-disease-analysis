@@ -383,7 +383,7 @@ if page == "📊 Overview":
         x=x,
         y=y,
         annotation_text=np.around(z, decimals=2), # Làm tròn 2 chữ số (fmt='.2f')
-        colorscale='RdBu', # Bảng màu tương tự 'RdBu_r'
+        colorscale=[[0.0, '#cf3a24'], [0.5, '#f7f7f7'], [1.0, '#246590']], # Bảng màu tương tự 'RdBu_r'
         zmin=-1, zmax=1,
         showscale=True
     )
