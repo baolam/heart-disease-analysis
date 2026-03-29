@@ -368,6 +368,43 @@ if page == "📊 Overview":
     #     fig_pie.update_layout(margin=dict(l=20, r=20, t=50, b=20), height=350)
     #     st.plotly_chart(fig_pie, use_container_width=True)
 
+    features_all = feature_names + ['cardiovascular_diseases']
+    corr_matrix = df[features_all].corr() # Lưu ý: Tương quan không đổi khi dùng StandardScaler nên có thể dùng trực tiếp df
+
+    # 2. Chuẩn bị dữ liệu cho Plotly
+    z = corr_matrix.values
+    x = list(corr_matrix.columns)
+    y = list(corr_matrix.index)
+
+    # 3. Tạo Heatmap bằng Figure Factory (để dễ dàng hiển thị con số 'annot')
+    fig = ff.create_annotated_heatmap(
+        z=z,
+        x=x,
+        y=y,
+        annotation_text=np.around(z, decimals=2), # Làm tròn 2 chữ số (fmt='.2f')
+        colorscale='redor', # Bảng màu tương tự 'RdBu_r'
+        zmin=-1, zmax=1,
+        showscale=True
+    )
+
+    # 4. Tinh chỉnh giao diện cho "sang chảnh"
+    fig.update_layout(
+        title='Correlation Matrix — Risk Factors and CVD Rate',
+        title_x=0.5, # Căn giữa tiêu đề
+        title_font=dict(size=14, color='#212529', family="Arial Black"),
+        margin=dict(t=100, l=150), # Chừa khoảng trống cho nhãn trục Y
+        xaxis=dict(side='bottom'), # Đưa nhãn trục X xuống dưới
+        width=800,
+        height=700
+    )
+
+    # Tinh chỉnh font chữ cho các con số bên trong ô
+    for i in range(len(fig.layout.annotations)):
+        fig.layout.annotations[i].font.size = 8
+
+    # 5. Hiển thị lên Streamlit
+    st.plotly_chart(fig, use_container_width=True)
+
     with col_line:
         # 2. Biểu đồ đường: Xu hướng tỷ lệ CVD qua các năm (2010 - 2015)
         trend_data = pd.DataFrame({
