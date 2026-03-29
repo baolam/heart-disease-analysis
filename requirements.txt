@@ -12,6 +12,7 @@ numpy
 matplotlib
 seaborn
 plotly
+pycountry
 
 # Học máy (Machine Learning)
 

@@ -7,6 +7,7 @@ import matplotlib.patches as mpatches
 import seaborn as sns
 import plotly.express as px
 import plotly.figure_factory as ff
+import pycountry
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 from sklearn.preprocessing import StandardScaler
@@ -17,6 +18,10 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 from xgboost import XGBRegressor
 from collections import defaultdict
+
+def get_full_name(iso_code):
+    country = pycountry.countries.get(alpha_3=iso_code)
+    return country.name if country else iso_code
 
 rf_imp  = [0.00378944, 0.06451446, 0.44498126, 0.24994588, 0.12873835, 0.09088146, 0.01522668, 0.00192247]
 xgb_imp = [0.03188968, 0.11535992, 0.2500725,  0.23829542, 0.13508256, 0.11364076, 0.06017521, 0.05548387]
@@ -339,6 +344,74 @@ if page == "📊 Overview":
     
         # --- PHẦN BỔ SUNG: XU HƯỚNG VÀ TỶ LỆ CÁC YẾU TỐ ---
     # st.markdown('<div class="section-title">Risk Factors Distribution & Global Trends</div>', unsafe_allow_html=True)
+
+    # 1. Chuẩn bị dữ liệu cho bản đồ (lấy trung bình theo quốc gia)
+    conn_viz = sqlite3.connect("sample_v4.db")
+    df_raw = pd.read_sql("""
+        SELECT SpatialDim AS country, ROUND(AVG(y),2) AS avg_cvd
+        FROM NearsestSample
+        WHERE TimeDim BETWEEN 2010 AND 2015 AND y IS NOT NULL
+        GROUP BY SpatialDim
+    """, conn_viz); conn_viz.close()
+
+    df_raw["country_names"] = df_raw["country"].apply(get_full_name)
+
+    top_10_countries = df_raw.nlargest(10, 'avg_cvd')['country'].tolist()
+
+    df_raw['line_color'] = df_raw['country'].apply(lambda x: 'yellow' if x in top_10_countries else '#DEE2E6')
+    df_raw['line_width'] = df_raw['country'].apply(lambda x: 1 if x in top_10_countries else 0.5)
+
+    # 1. Vẽ bản đồ thế giới bằng Plotly Express
+    fig_map = px.choropleth(
+        df_raw,
+        locations="country",           # Cột chứa tên quốc gia (SpatialDim)
+        locationmode='ISO-3',  # Chế độ nhận diện theo tên quốc gia
+        color="avg_cvd",               # Màu sắc dựa trên trị số trung bình CVD
+        hover_name="country_names",          # Hiện tên quốc gia khi rê chuột vào
+        title='<b>Global Distribution of CVD Rates (2010–2015)</b>',
+        color_continuous_scale='RdPu', # Dải màu đỏ-tím đồng bộ với biểu đồ cột
+        labels={'avg_cvd': 'Avg CVD'}  # Đổi tên nhãn hiển thị cho đẹp
+    )
+
+    fig_map.update_traces(
+        marker_line_color=df_raw['line_color'], # Đô màu viền riêng cho từng nước
+        marker_line_width=df_raw['line_width']  # Làm dày viền cho Top 10
+    )
+
+    # 2. Thiết lập bố cục (Layout) trắng trẻo, đồng bộ với dashboard
+    fig_map.update_layout(
+        paper_bgcolor='white',      # Nền ngoài trắng
+        plot_bgcolor='white',       # Nền trong trắng
+        font=dict(color='black', family="Arial Black"),
+        
+        # Cấu hình thuộc tính địa lý (Geographic)
+        geo=dict(
+            showframe=False,        # Bỏ khung viền hình chữ nhật bao quanh thế giới
+            showcoastlines=True,    # Hiện đường viền bờ biển
+            coastlinecolor="#DEE2E6", # Màu đường bờ biển xám nhạt cho tinh tế
+            projection_type='equirectangular', # Phép chiếu bản đồ phẳng tiêu chuẩn
+            bgcolor='white',        # Nền đại dương màu trắng
+            showland=True,
+            landcolor="#F8F9FA",    # Màu của những vùng đất không có dữ liệu
+            showocean=True,
+            oceancolor="white"      # Đảm bảo đại dương trắng tinh khôi
+        ),
+        
+        # Tinh chỉnh thanh màu (Color Bar) sang màu đen
+        coloraxis_colorbar=dict(
+            title="CVD Rate",
+            thicknessmode="pixels", thickness=15,
+            lenmode="fraction", len=0.6,
+            yanchor="middle", y=0.5,
+            tickfont=dict(color='black')
+        ),
+        
+        margin=dict(t=80, b=20, l=10, r=10),
+        height=600
+    )
+
+    # 3. Hiển thị lên Streamlit với theme=None để ép màu trắng
+    st.plotly_chart(fig_map, use_container_width=True, theme=None)
     
     col_pie, col_line, col_ols = st.columns(3)
 
