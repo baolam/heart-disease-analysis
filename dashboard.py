@@ -431,6 +431,9 @@ if page == "📊 Overview":
         labels = list(group_vals.keys())
         values = list(group_vals.values())
 
+        labels.append(labels.pop())
+        values.append(values.pop())
+
         # 2. Vẽ biểu đồ bằng Plotly
         fig = px.pie(
             names=labels, 
@@ -474,7 +477,7 @@ if page == "📊 Overview":
         # 2. Biểu đồ đường: Xu hướng tỷ lệ CVD qua các năm (2010 - 2015)
         trend_data = pd.DataFrame({
             'Year': [2010, 2011, 2012, 2013, 2014, 2015],
-            'CVD Rate': [39.55, 39.68, 39.82, 39.95, 40.05, 40.13]
+            'CVD Rate': [39.53, 39.70, 39.81, 39.96, 40.11, 40.05]
         })
         
         fig_line = px.line(trend_data, x='Year', y='CVD Rate',
@@ -1285,7 +1288,7 @@ elif page == "📈 Visualization":
         st.markdown("""
         <div class="insight-box" style="margin-top:20px;">
             <strong>Sustainable Upward Trend</strong><br><br>
-            Cardiovascular Disease (CVD) increased from <strong>39.55</strong> in 2010 to <strong>40.13</strong> in 2015,
+            Cardiovascular Disease (CVD) increased from <strong>39.55</strong> in 2010 to <strong>40.05</strong> in 2015,
             reflecting the gradual accumulation of global risk factors..
         </div>""", unsafe_allow_html=True)
 
