@@ -33,7 +33,7 @@ queries_display = [
         "sql": """SELECT TimeDim AS year, COUNT(*) AS total_records,
         ROUND(AVG(y),2) AS avg_cvd, ROUND(MIN(y),2) AS min_cvd, ROUND(MAX(y),2) AS max_cvd
         FROM NearsestSample
-        WHERE TimeDim BETWEEN 2010 AND 2015
+        WHERE TimeDim BETWEEN 2010 AND 2015 AND y <= 100
         GROUP BY TimeDim ORDER BY TimeDim""",
     },
     {
