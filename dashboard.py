@@ -769,7 +769,7 @@ if page == "📊 Overview":
         ("🏆 XGBoost as the Best Model",
          "R²=0.602 vs Linear R²=0.096. A nonlinear model that captures complex interactions among CVD risk factors."),
         ("📊 BMI & Cholesterol Dominate",
-         "BMI contributes 25.01% and Cholesterol 24.83% in XGBoost — together accounting for over 50% of the model’s predictive power."),
+         "BMI contributes 25.01% and Cholesterol 23.83% in XGBoost — together accounting for over 50% of the model’s predictive power."),
         ("📈 Increasing Trend in CVD Rates",
          "CVD rates increased from 39.53 (2010) to 40.05 (2015), alongside a steady rise in global BMI."),
     ]
