@@ -515,6 +515,7 @@ if page == "📊 Overview":
                 showgrid=True,
                 gridcolor='rgba(0, 0, 0, 0.1)' # Lưới màu đen nhưng để mờ (0.1) cho tinh tế
             ),
+            title="Top 10 Highest CVD Countries"
         )
 
         # 6. Hiển thị lên Streamlit
