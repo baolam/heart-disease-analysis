@@ -501,6 +501,12 @@ if page == "📊 Overview":
             margin=dict(t=80, b=50, l=20, r=20),
             width=300,
             height=350,
+            title=dict(
+                text='<b>Top 10 Countries with the Highest CVD Rates</b>',
+                x=0.5,             # Căn giữa tiêu đề
+                xanchor='center',
+                font=dict(size=14, family="Arial Black", color="black")
+            ),
             xaxis=dict(
                 title_font=dict(color='black'), # Tên trục X màu đen
                 tickfont=dict(color='black'),  # Các con số năm màu đen
@@ -515,7 +521,7 @@ if page == "📊 Overview":
                 showgrid=True,
                 gridcolor='rgba(0, 0, 0, 0.1)' # Lưới màu đen nhưng để mờ (0.1) cho tinh tế
             ),
-            title="Top 10 Highest CVD Countries"
+            # title="Top 10 Highest CVD Countries"
         )
 
         # 6. Hiển thị lên Streamlit
