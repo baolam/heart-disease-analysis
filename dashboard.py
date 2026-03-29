@@ -5,6 +5,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import seaborn as sns
+import plotly.express as px
+import plotly.figure_factory as ff
+from plotly.subplots import make_subplots
+import plotly.graph_objects as go
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
@@ -13,6 +17,9 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 from xgboost import XGBRegressor
 from collections import defaultdict
+
+rf_imp  = [0.00378944, 0.06451446, 0.44498126, 0.24994588, 0.12873835, 0.09088146, 0.01522668, 0.00192247]
+xgb_imp = [0.03188968, 0.11535992, 0.2500725,  0.23829542, 0.13508256, 0.11364076, 0.06017521, 0.05548387]
 
 # ─────────────────────────────────────────────
 # PAGE CONFIG
@@ -162,6 +169,7 @@ def train_all_models(_df):
     feature_names = ['air_pollution','alcohol_consumption','BMI','cholesterol',
                      'diabetes','glucose','physical_activities','tobacco']
     X = _df[feature_names]
+    print(X.describe())
     y = _df['cardiovascular_diseases']
 
     X_train, X_test, y_train, y_test = train_test_split(
@@ -195,13 +203,14 @@ def train_all_models(_df):
         }
     results['_y_test'] = y_test.values
     results['_features'] = feature_names
-    return results
+    return results, models, scaler
 
 # ─────────────────────────────────────────────
 # LOAD DATA
 # ─────────────────────────────────────────────
 try:
     df = load_and_preprocess()
+    results, models, scaler = train_all_models(df)
 except Exception as e:
     st.error(f"⚠️ Unable to load database: {e}")
     st.stop()
@@ -221,7 +230,7 @@ with st.sidebar:
 
     page = st.radio(
         "Navigation",
-        ["📊 Overview", "🔍 EDA", "📈 Visualization", "🤖 Modeling", "🗄️ SQL Analysis"],
+        ["📊 Overview", "🔍 EDA", "📈 Visualization", "🤖 Modeling", "🗄️ SQL Analysis", "🏗️ Project Architecture"],
         label_visibility="collapsed"
     )
     st.markdown("---")
@@ -266,6 +275,205 @@ if page == "📊 Overview":
                 <div class="metric-value">{value}</div>
                 <div class="metric-sub">{sub}</div>
             </div>""", unsafe_allow_html=True)
+    
+        # --- PHẦN BỔ SUNG: XU HƯỚNG VÀ TỶ LỆ CÁC YẾU TỐ ---
+    st.markdown('<div class="section-title">Risk Factors Distribution & Global Trends</div>', unsafe_allow_html=True)
+    
+    col_pie, col_line = st.columns(2)
+
+    groups_def = {
+        'Lifestyle\n(BMI, Tobacco, Alcohol consumption, Physical activities)':
+            ['physical_activities','tobacco','alcohol_consumption','BMI'],
+        'Environment\n(Air pollution)': ['air_pollution'],
+        'Clinial factors\n(Cholesterol, Diabetes, Glucose)':
+            ['cholesterol','diabetes','glucose'],
+    }
+    feat_map = {f: i for i, f in enumerate(feature_names)}
+    group_vals = {}
+    for name, comps in groups_def.items():
+        group_vals[name] = sum(xgb_imp[feat_map[c]] for c in comps)
+
+    # col1, col2 = st.columns([1, 2])
+    with col_pie:
+        # fig, ax = plt.subplots(figsize=(5, 5))
+        # wedges, _, autotexts = ax.pie(
+        #     group_vals.values(), labels=None,
+        #     autopct='%1.2f%%', colors=['#4361EE','#F72585','#7209B7'],
+        #     startangle=90, pctdistance=0.68,
+        #     wedgeprops=dict(linewidth=2.5, edgecolor='#F8F9FA')
+        # )
+        # for at in autotexts:
+        #     at.set_fontsize(11); at.set_fontweight('bold'); at.set_color('white')
+        # ax.legend(list(group_vals.keys()), loc='lower center',
+        #           bbox_to_anchor=(0.5, -0.3), ncol=1, fontsize=9,
+        #           framealpha=0, labelcolor='#212529')
+        # ax.set_title('Contribution by Group \n(XGBoost)', fontsize=10.5,
+        #              fontweight='bold', color='#212529', pad=14)
+        # fig.tight_layout()
+        # # st.pyplot(fig)
+        # st.plotly_chart(fig)
+        # plt.close()
+        # 1. Chuẩn bị dữ liệu từ dictionary group_vals
+        labels = list(group_vals.keys())
+        values = list(group_vals.values())
+
+        # 2. Vẽ biểu đồ bằng Plotly
+        fig = px.pie(
+            names=labels, 
+            values=values,
+            title='Contribution by Group<br>(XGBoost)',
+            color_discrete_sequence=['#4361EE', '#F72585', '#7209B7'] # Giữ đúng bộ màu của chủ nhân
+        )
+
+        # 3. Tinh chỉnh hiển thị (giống các thiết lập wedges và autotexts)
+        fig.update_traces(
+            textinfo='percent', # Chỉ hiện phần trăm (giống autopct='%1.2f%%')
+            textfont_size=14,
+            textfont_color='white',
+            marker=dict(line=dict(color='#F8F9FA', width=2.5)), # Giống wedgeprops
+            hovertemplate="<b>%{label}</b><br>Tỷ lệ: %{percent:.2%}<br>Giá trị: %{value}<extra></extra>"
+        )
+
+        # 4. Thiết lập bố cục (Layout)
+        fig.update_layout(
+            title_font=dict(size=14, color='#212529', family="Arial Black"),
+            legend=dict(
+                orientation="h",       # Chú thích nằm ngang
+                yanchor="bottom",
+                y=-0.2,                # Đưa chú thích xuống dưới giống bbox_to_anchor
+                xanchor="center",
+                x=0.5
+            ),
+            margin=dict(t=80, b=50, l=20, r=20),
+            width=500,
+            height=550
+        )
+
+        # 5. Hiển thị lên Streamlit
+        st.plotly_chart(fig, use_container_width=True)
+
+    # with col_pie:
+    #     # 1. Biểu đồ tròn: Tỷ lệ đóng góp của các yếu tố nguy cơ (Feature Importance)
+    #     # Dựa trên dữ liệu chủ nhân cung cấp: BMI (36.71%) + Cholesterol (35.61%) + Others
+    #     pie_data = pd.DataFrame({
+    #         'Factor': ['BMI', 'Cholesterol', 'Blood Pressure', 'Age', 'Smoking', 'Others'],
+    #         'Importance': [36.71, 35.61, 12.5, 8.2, 4.5, 2.48]
+    #     })
+        
+    #     fig_pie = px.pie(pie_data, values='Importance', names='Factor', 
+    #                      title='<b>Risk Factor Importance (XGBoost)</b>',
+    #                      hole=0.4, # Tạo hình vòng nhẫn (Donut chart) cho hiện đại
+    #                      color_discrete_sequence=px.colors.qualitative.Pastel)
+        
+    #     fig_pie.update_layout(margin=dict(l=20, r=20, t=50, b=20), height=350)
+    #     st.plotly_chart(fig_pie, use_container_width=True)
+
+    with col_line:
+        # 2. Biểu đồ đường: Xu hướng tỷ lệ CVD qua các năm (2010 - 2015)
+        trend_data = pd.DataFrame({
+            'Year': [2010, 2011, 2012, 2013, 2014, 2015],
+            'CVD Rate': [39.55, 39.68, 39.82, 39.95, 40.05, 40.13]
+        })
+        
+        fig_line = px.line(trend_data, x='Year', y='CVD Rate',
+                           title='<b>Global CVD Rate Trend (2010-2015)</b>',
+                           markers=True, 
+                           line_shape='spline') # Đường cong mềm mại
+        
+        # Trang trí đường biểu đồ cho giống tone màu chủ đạo
+        fig_line.update_traces(line_color='#e05c5c', line_width=3)
+        fig_line.update_layout(
+            xaxis_title="Year",
+            yaxis_title="Rate per 100k",
+            plot_bgcolor='rgba(0,0,0,0)',
+            margin=dict(l=20, r=20, t=50, b=20),
+            height=350
+        )
+        # Thêm lưới mờ cho trục Y
+        fig_line.update_yaxes(showgrid=True, gridwidth=1, gridcolor='#f0f0f0')
+        st.plotly_chart(fig_line, use_container_width=True)
+    
+    # st.markdown('<div class="section-title">SQL Queries & Result</div>', unsafe_allow_html=True)
+
+    try:
+        conn_sql = sqlite3.connect("sample_v4.db")
+    except Exception as e:
+        st.error(f"Can not connect to DB: {e}"); st.stop()
+
+    queries_display = [
+        {
+            "title": "Annual CVD Trends (2010–2015)",
+            "question": "How has the CVD rate changed over the years?",
+            "sql": """SELECT TimeDim AS year, COUNT(*) AS total_records,
+            ROUND(AVG(y),2) AS avg_cvd, ROUND(MIN(y),2) AS min_cvd, ROUND(MAX(y),2) AS max_cvd
+            FROM NearsestSample
+            WHERE TimeDim BETWEEN 2010 AND 2015
+            GROUP BY TimeDim ORDER BY TimeDim""",
+        },
+        {
+            "title": "Top 10 Highest CVD Prevalence Countries",
+            "question": "Which country carries the greatest CVD burden?",
+            "sql": """SELECT SpatialDim AS country, ROUND(AVG(y),2) AS avg_cvd, COUNT(*) AS records
+            FROM NearsestSample
+            WHERE TimeDim BETWEEN 2010 AND 2015 AND y IS NOT NULL
+            GROUP BY SpatialDim ORDER BY avg_cvd DESC LIMIT 10""",
+        },
+        {
+            "title": "Average Risk Factors by Year",
+            "question": "How do metabolic factors change over time?",
+            "sql": """SELECT TimeDim AS year,
+            ROUND(AVG(x3),2) AS avg_BMI, ROUND(AVG(x4),2) AS avg_cholesterol,
+            ROUND(AVG(x5),2) AS avg_diabetes, ROUND(AVG(x6),2) AS avg_glucose,
+            ROUND(AVG(x8),2) AS avg_physical_activities, ROUND(AVG(x9),2) AS avg_tobacco
+            FROM NearsestSample
+            WHERE TimeDim BETWEEN 2010 AND 2015
+            GROUP BY TimeDim ORDER BY TimeDim""",
+        },
+        {
+            "title": "Analysis of Missing Data",
+            "question": "What is the missing rate for each feature, and how does it justify the infrastructure type?",
+            "sql": """SELECT 'infrastructure(dropped)' AS feature,
+        COUNT(*)-COUNT(x7) AS missing,
+        ROUND(100.0*(COUNT(*)-COUNT(x7))/COUNT(*),2) AS pct_missing
+    FROM NearsestSample WHERE TimeDim BETWEEN 2010 AND 2015
+    UNION ALL SELECT 'air_pollution', COUNT(*)-COUNT(x1),
+        ROUND(100.0*(COUNT(*)-COUNT(x1))/COUNT(*),2)
+    FROM NearsestSample WHERE TimeDim BETWEEN 2010 AND 2015
+    UNION ALL SELECT 'alcohol_consumption', COUNT(*)-COUNT(x2),
+        ROUND(100.0*(COUNT(*)-COUNT(x2))/COUNT(*),2)
+    FROM NearsestSample WHERE TimeDim BETWEEN 2010 AND 2015
+    ORDER BY pct_missing DESC""",
+        },
+        {
+            "title": "Descriptive Statistics for Variables",
+            "question": "What are the descriptive statistics for each risk factor?",
+            "sql": """SELECT 'cardiovascular_diseases' AS variable,
+            ROUND(AVG(y),2) AS mean, ROUND(MIN(y),2) AS min, ROUND(MAX(y),2) AS max
+        FROM NearsestSample WHERE TimeDim BETWEEN 2010 AND 2015
+        UNION ALL SELECT 'BMI', ROUND(AVG(x3),2), ROUND(MIN(x3),2), ROUND(MAX(x3),2)
+        FROM NearsestSample WHERE TimeDim BETWEEN 2010 AND 2015
+        UNION ALL SELECT 'cholesterol', ROUND(AVG(x4),2), ROUND(MIN(x4),2), ROUND(MAX(x4),2)
+        FROM NearsestSample WHERE TimeDim BETWEEN 2010 AND 2015
+        UNION ALL SELECT 'diabetes', ROUND(AVG(x5),2), ROUND(MIN(x5),2), ROUND(MAX(x5),2)
+        FROM NearsestSample WHERE TimeDim BETWEEN 2010 AND 2015
+        UNION ALL SELECT 'tobacco', ROUND(AVG(x9),2), ROUND(MIN(x9),2), ROUND(MAX(x9),2)
+        FROM NearsestSample WHERE TimeDim BETWEEN 2010 AND 2015""",
+        }
+    ]
+
+    for q in queries_display:
+        with st.expander(f"**{q['title']}**", expanded=True):
+            st.markdown(
+                f"<div style='color:#8b90a0;font-size:0.82rem;margin-bottom:10px;'>"
+                f"❓ {q['question']}</div>", unsafe_allow_html=True)
+            # st.markdown(f"<div class='sql-block'>{q['sql']}</div>", unsafe_allow_html=True)
+            try:
+                result_df = pd.read_sql(q['sql'], conn_sql)
+                st.dataframe(result_df, use_container_width=True)
+            except Exception as e:
+                st.error(f"Query error: {e}")
+
+    conn_sql.close()
 
     st.markdown('<div class="section-title">Model Performance — All models</div>',
                 unsafe_allow_html=True)
@@ -326,29 +534,61 @@ if page == "📊 Overview":
         </div>""", unsafe_allow_html=True)
 
     with col2:
-        plt.rcParams.update(CHART_STYLE)
-        fig, ax = plt.subplots(figsize=(5, 4))
-        models_list = ['Linear\nRegression','Decision\nTree','Random\nForest',
-                       'XGBoost','Extra\nTrees']
-        r2_vals = [0.0956, 0.4477, 0.4808, 0.6020, 0.3950]
-        bar_colors = ['#f87171','#f59e0b','#60a5fa','#60a5fa','#4ade80']
-        bars = ax.barh(models_list, r2_vals, color=bar_colors, height=0.55)
-        for bar, val in zip(bars, r2_vals):
-            ax.text(val+0.01, bar.get_y()+bar.get_height()/2,
-                    f'{val:.4f}', va='center', fontsize=8.5,
-                    color='#212529', fontweight='600')
-        ax.set_xlabel('R² Score', fontsize=9.5, color='#495057')
-        ax.set_xlim(0, 1.05)
-        ax.axvline(0.4, color=ACCENT, linestyle='--', alpha=0.6, linewidth=1.2)
-        ax.text(0.5, 4.4, 'R²=0.5', fontsize=7.5, color=ACCENT)
-        ax.set_title('Compare R² — 5 models', fontsize=10,
-                     fontweight='bold', color='#212529', pad=10)
-        ax.spines['top'].set_visible(False)
-        ax.spines['right'].set_visible(False)
-        ax.grid(True, axis='x', alpha=0.4)
-        fig.tight_layout()
-        st.pyplot(fig)
-        plt.close()
+        # plt.rcParams.update(CHART_STYLE)
+        # fig, ax = plt.subplots(figsize=(5, 4))
+        # models_list = ['Linear\nRegression','Decision\nTree','Random\nForest',
+        #                'XGBoost','Extra\nTrees']
+        # r2_vals = [0.0956, 0.4477, 0.4808, 0.6020, 0.3950]
+        # bar_colors = ['#f87171','#f59e0b','#60a5fa','#60a5fa','#4ade80']
+        # bars = ax.barh(models_list, r2_vals, color=bar_colors, height=0.55)
+        # for bar, val in zip(bars, r2_vals):
+        #     ax.text(val+0.01, bar.get_y()+bar.get_height()/2,
+        #             f'{val:.4f}', va='center', fontsize=8.5,
+        #             color='#212529', fontweight='600')
+        # ax.set_xlabel('R² Score', fontsize=9.5, color='#495057')
+        # ax.set_xlim(0, 1.05)
+        # ax.axvline(0.4, color=ACCENT, linestyle='--', alpha=0.6, linewidth=1.2)
+        # ax.text(0.5, 4.4, 'R²=0.5', fontsize=7.5, color=ACCENT)
+        # ax.set_title('Compare R² — 5 models', fontsize=10,
+        #              fontweight='bold', color='#212529', pad=10)
+        # ax.spines['top'].set_visible(False)
+        # ax.spines['right'].set_visible(False)
+        # ax.grid(True, axis='x', alpha=0.4)
+        # fig.tight_layout()
+        # # st.pyplot(fig)
+        # st.plotly_chart(fig)
+        # plt.close()
+        _df = pd.DataFrame({
+            'Model': ['Linear Regression', 'Decision Tree', 'Random Forest', 'XGBoost', 'Extra Trees'],
+            'R2 Score': [0.0956, 0.4477, 0.4808, 0.6020, 0.3950],
+            'Color': ['#f87171', '#f59e0b', '#60a5fa', '#60a5fa', '#4ade80']
+        })
+
+        # 2. Vẽ biểu đồ bằng Plotly
+        fig = px.bar(_df, 
+                    x='R2 Score', 
+                    y='Model', 
+                    orientation='h',
+                    text='R2 Score', # Hiển thị số trên cột
+                    title='Compare R² — 5 models',
+                    color='Color', 
+                    color_discrete_map="identity") # Giữ đúng mã màu chủ nhân chọn
+
+        # 3. Tinh chỉnh để đẹp như bản cũ
+        fig.update_traces(texttemplate='%{text:.4f}', textposition='outside')
+        fig.update_layout(
+            xaxis_range=[0, 1.05],
+            showlegend=False,
+            plot_bgcolor='white',
+            margin=dict(l=20, r=20, t=40, b=20),
+            height=400
+        )
+
+        # Thêm đường kẻ phụ (Reference Line) tại R² = 0.5
+        fig.add_vline(x=0.5, line_dash="dash", line_color="#495057", opacity=0.6)
+
+        # 4. Hiển thị lên Streamlit
+        st.plotly_chart(fig, use_container_width=True)
 
     st.markdown('<div class="section-title">Key Findings</div>', unsafe_allow_html=True)
     col1, col2, col3 = st.columns(3)
@@ -416,25 +656,73 @@ elif page == "🔍 EDA":
 
     col1, col2 = st.columns([2, 1])
     with col1:
-        plt.rcParams.update(CHART_STYLE)
-        fig, ax = plt.subplots(figsize=(8, 4))
+        # plt.rcParams.update(CHART_STYLE)
+        # fig, ax = plt.subplots(figsize=(8, 4))
+        # miss_sorted = miss_data.sort_values('Tỷ lệ (%)', ascending=True)
+        # bar_c = [ACCENT if x > 50 else '#4361EE' if x > 0 else '#DEE2E6'
+        #          for x in miss_sorted['Tỷ lệ (%)']]
+        # bars = ax.barh(miss_sorted['Đặc trưng'], miss_sorted['Tỷ lệ (%)'],
+        #                color=bar_c, height=0.6, edgecolor='white')
+        # for bar, val in zip(bars, miss_sorted['Tỷ lệ (%)']):
+        #     if val > 0:
+        #         ax.text(val+0.5, bar.get_y()+bar.get_height()/2,
+        #                 f'{val}%', va='center', fontsize=9, color='#212529', fontweight='600')
+        # ax.set_xlabel('Missing Rate (%)', fontsize=10)
+        # ax.set_title(' Missing value by feature', fontsize=11,
+        #              fontweight='bold', color='#212529', pad=10)
+        # ax.axvline(50, color=ACCENT, linestyle='--', alpha=0.5, linewidth=1.2)
+        # ax.spines['top'].set_visible(False); ax.spines['right'].set_visible(False)
+        # ax.grid(True, axis='x', alpha=0.4)
+        # fig.tight_layout()
+        # # st.pyplot(fig); 
+        # st.plotly_chart(fig)
+        # plt.close()
+        # 1. Sắp xếp dữ liệu (giống như miss_sorted của chủ nhân)
         miss_sorted = miss_data.sort_values('Tỷ lệ (%)', ascending=True)
-        bar_c = [ACCENT if x > 50 else '#4361EE' if x > 0 else '#DEE2E6'
-                 for x in miss_sorted['Tỷ lệ (%)']]
-        bars = ax.barh(miss_sorted['Đặc trưng'], miss_sorted['Tỷ lệ (%)'],
-                       color=bar_c, height=0.6, edgecolor='white')
-        for bar, val in zip(bars, miss_sorted['Tỷ lệ (%)']):
-            if val > 0:
-                ax.text(val+0.5, bar.get_y()+bar.get_height()/2,
-                        f'{val}%', va='center', fontsize=9, color='#212529', fontweight='600')
-        ax.set_xlabel('Missing Rate (%)', fontsize=10)
-        ax.set_title(' Missing value by feature', fontsize=11,
-                     fontweight='bold', color='#212529', pad=10)
-        ax.axvline(50, color=ACCENT, linestyle='--', alpha=0.5, linewidth=1.2)
-        ax.spines['top'].set_visible(False); ax.spines['right'].set_visible(False)
-        ax.grid(True, axis='x', alpha=0.4)
-        fig.tight_layout()
-        st.pyplot(fig); plt.close()
+
+        # 2. Xác định màu sắc dựa trên điều kiện (giống logic bar_c)
+        # Chúng ta thêm một cột 'Color' vào DataFrame để Plotly hiểu
+        def get_color(x):
+            if x > 50: return '#FF4B4B' # Giả định ACCENT là màu đỏ
+            elif x > 0: return '#4361EE'
+            else: return '#DEE2E6'
+
+        miss_sorted['Color'] = miss_sorted['Tỷ lệ (%)'].apply(get_color)
+
+        # 3. Vẽ biểu đồ bằng Plotly
+        fig = px.bar(miss_sorted, 
+                    x='Tỷ lệ (%)', 
+                    y='Đặc trưng', 
+                    orientation='h',
+                    text='Tỷ lệ (%)', # Hiển thị con số %
+                    title='Missing value by feature',
+                    color='Color',
+                    color_discrete_map="identity")
+
+        # 4. Tinh chỉnh các thông số hiển thị (Trục, lưới, đường kẻ phụ)
+        fig.update_traces(
+            texttemplate='%{text}%', 
+            textposition='outside',
+            marker_line_color='white',
+            marker_line_width=1
+        )
+
+        fig.update_layout(
+            xaxis_title='Missing Rate (%)',
+            yaxis_title=None,
+            plot_bgcolor='white',
+            xaxis=dict(range=[0, 105], showgrid=True, gridcolor='rgba(0,0,0,0.1)'),
+            title_font=dict(size=14, family="Arial", color="#212529"),
+            showlegend=False,
+            height=400,
+            margin=dict(l=20, r=20, t=50, b=20)
+        )
+
+        # Thêm đường kẻ phụ (Threshold) tại mức 50%
+        fig.add_vline(x=50, line_dash="dash", line_color="#FF4B4B", opacity=0.5)
+
+        # 5. Hiển thị lên Streamlit
+        st.plotly_chart(fig, use_container_width=True)
 
     with col2:
         st.markdown("""
@@ -470,27 +758,66 @@ elif page == "🔍 EDA":
 # PAGE: VISUALIZATION
 # =================================================================
 elif page == "📈 Visualization":
-    plt.rcParams.update(CHART_STYLE)
+    # plt.rcParams.update(CHART_STYLE)
 
-    # Correlation Heatmap
-    st.markdown('<div class="section-title">Correlation matrix</div>', unsafe_allow_html=True)
+    # # Correlation Heatmap
+    # st.markdown('<div class="section-title">Correlation matrix</div>', unsafe_allow_html=True)
+    # features_all = feature_names + ['cardiovascular_diseases']
+    # df_scaled = df.copy()
+    # sc = StandardScaler()
+    # df_scaled[feature_names] = sc.fit_transform(df[feature_names])
+    # corr_matrix = df_scaled[features_all].corr()
+
+    # fig, ax = plt.subplots(figsize=(10, 7))
+    # sns.heatmap(corr_matrix, annot=True, cmap='RdBu_r', fmt='.2f',
+    #             linewidths=0.5, linecolor='#F8F9FA', ax=ax,
+    #             annot_kws={'size': 8}, vmin=-1, vmax=1,
+    #             cbar_kws={'shrink': 0.8})
+    # ax.set_title('Correlation Matrix — Risk Factors and CVD Rate',
+    #              fontsize=11, fontweight='bold', color='#212529', pad=12)
+    # ax.tick_params(axis='x', rotation=45, labelsize=8)
+    # ax.tick_params(axis='y', rotation=0, labelsize=8)
+    # fig.tight_layout()
+    # # st.pyplot(fig)
+    # st.plotly_chart(fig)
+    # plt.close()
+    # 1. Tính toán ma trận tương quan (giữ nguyên logic của chủ nhân)
     features_all = feature_names + ['cardiovascular_diseases']
-    df_scaled = df.copy()
-    sc = StandardScaler()
-    df_scaled[feature_names] = sc.fit_transform(df[feature_names])
-    corr_matrix = df_scaled[features_all].corr()
+    corr_matrix = df[features_all].corr() # Lưu ý: Tương quan không đổi khi dùng StandardScaler nên có thể dùng trực tiếp df
 
-    fig, ax = plt.subplots(figsize=(10, 7))
-    sns.heatmap(corr_matrix, annot=True, cmap='RdBu_r', fmt='.2f',
-                linewidths=0.5, linecolor='#F8F9FA', ax=ax,
-                annot_kws={'size': 8}, vmin=-1, vmax=1,
-                cbar_kws={'shrink': 0.8})
-    ax.set_title('Correlation Matrix — Risk Factors and CVD Rate',
-                 fontsize=11, fontweight='bold', color='#212529', pad=12)
-    ax.tick_params(axis='x', rotation=45, labelsize=8)
-    ax.tick_params(axis='y', rotation=0, labelsize=8)
-    fig.tight_layout()
-    st.pyplot(fig); plt.close()
+    # 2. Chuẩn bị dữ liệu cho Plotly
+    z = corr_matrix.values
+    x = list(corr_matrix.columns)
+    y = list(corr_matrix.index)
+
+    # 3. Tạo Heatmap bằng Figure Factory (để dễ dàng hiển thị con số 'annot')
+    fig = ff.create_annotated_heatmap(
+        z=z,
+        x=x,
+        y=y,
+        annotation_text=np.around(z, decimals=2), # Làm tròn 2 chữ số (fmt='.2f')
+        colorscale='redor', # Bảng màu tương tự 'RdBu_r'
+        zmin=-1, zmax=1,
+        showscale=True
+    )
+
+    # 4. Tinh chỉnh giao diện cho "sang chảnh"
+    fig.update_layout(
+        title='Correlation Matrix — Risk Factors and CVD Rate',
+        title_x=0.5, # Căn giữa tiêu đề
+        title_font=dict(size=14, color='#212529', family="Arial Black"),
+        margin=dict(t=100, l=150), # Chừa khoảng trống cho nhãn trục Y
+        xaxis=dict(side='bottom'), # Đưa nhãn trục X xuống dưới
+        width=800,
+        height=700
+    )
+
+    # Tinh chỉnh font chữ cho các con số bên trong ô
+    for i in range(len(fig.layout.annotations)):
+        fig.layout.annotations[i].font.size = 8
+
+    # 5. Hiển thị lên Streamlit
+    st.plotly_chart(fig, use_container_width=True)
 
     st.markdown("""
     <div class="insight-box">
@@ -531,30 +858,70 @@ elif page == "📈 Visualization":
     df_top['label'] = df_top['country'].map(lambda x: country_names.get(x, x))
     df_top = df_top.sort_values('avg_cvd', ascending=True)
 
-    fig, ax = plt.subplots(figsize=(10, 5.5))
-    norm = plt.Normalize(df_top['avg_cvd'].min(), df_top['avg_cvd'].max())
-    bar_colors = [plt.cm.RdPu(norm(v)*0.7+0.25) for v in df_top['avg_cvd']]
-    bars = ax.barh(df_top['label'], df_top['avg_cvd'], color=bar_colors,
-                   height=0.62, edgecolor='white', linewidth=0.5)
-    for bar, val in zip(bars, df_top['avg_cvd']):
-        ax.text(val+0.3, bar.get_y()+bar.get_height()/2, f'{val:.2f}',
-                va='center', ha='left', fontsize=10, fontweight='600', color='#212529')
-    ax.axvline(39.86, color=ACCENT, linestyle='--', linewidth=1.8, alpha=0.8)
-    ax.text(39.86+0.4, 0.3, f'Global average\n39.86', fontsize=8.5,
-            color=ACCENT, va='bottom', fontweight='600')
-    ax.set_xlabel('Average CVD', fontsize=11)
-    ax.set_title('Top 10 Countries with the Highest CVD Rates (2010–2015)',
-                 fontsize=11, fontweight='bold', color='#212529', pad=12)
-    ax.set_xlim(0, 80)
-    ax.spines['top'].set_visible(False); ax.spines['right'].set_visible(False)
-    ax.grid(True, axis='x', alpha=0.4)
-    fig.tight_layout(); st.pyplot(fig); plt.close()
+    # fig, ax = plt.subplots(figsize=(10, 5.5))
+    # norm = plt.Normalize(df_top['avg_cvd'].min(), df_top['avg_cvd'].max())
+    # bar_colors = [plt.cm.RdPu(norm(v)*0.7+0.25) for v in df_top['avg_cvd']]
+    # bars = ax.barh(df_top['label'], df_top['avg_cvd'], color=bar_colors,
+    #                height=0.62, edgecolor='white', linewidth=0.5)
+    # for bar, val in zip(bars, df_top['avg_cvd']):
+    #     ax.text(val+0.3, bar.get_y()+bar.get_height()/2, f'{val:.2f}',
+    #             va='center', ha='left', fontsize=10, fontweight='600', color='#212529')
+    # ax.axvline(39.86, color=ACCENT, linestyle='--', linewidth=1.8, alpha=0.8)
+    # ax.text(39.86+0.4, 0.3, f'Global average\n39.86', fontsize=8.5,
+    #         color=ACCENT, va='bottom', fontweight='600')
+    # ax.set_xlabel('Average CVD', fontsize=11)
+    # ax.set_title('Top 10 Countries with the Highest CVD Rates (2010–2015)',
+    #              fontsize=11, fontweight='bold', color='#212529', pad=12)
+    # ax.set_xlim(0, 80)
+    # ax.spines['top'].set_visible(False); ax.spines['right'].set_visible(False)
+    # ax.grid(True, axis='x', alpha=0.4)
+    # fig.tight_layout()
+    # # st.pyplot(fig)
+    # st.plotly_chart(fig)
+    # plt.close()
+    fig = px.bar(df_top, 
+             x='avg_cvd', 
+             y='label', 
+             orientation='h',
+             text='avg_cvd',
+             title='Top 10 Countries with the Highest CVD Rates (2010–2015)',
+             color='avg_cvd',
+             color_continuous_scale='RdPu') # Dải màu RdPu giống Matplotlib
+
+    # 3. Tinh chỉnh đường nét và con số
+    fig.update_traces(
+        texttemplate='%{text:.2f}', 
+        textposition='outside',
+        marker_line_color='white',
+        marker_line_width=0.5,
+        hovertemplate='<b>%{y}</b><br>Average CVD: %{x:.2f}' # Nội dung hiện khi rê chuột
+    )
+
+    # 4. Thêm đường trung bình toàn cầu (Global Average Line)
+    global_avg = 39.86
+    fig.add_vline(x=global_avg, 
+                line_dash="dash", 
+                line_color="#FF4B4B", # Màu ACCENT của chủ nhân
+                line_width=2,
+                annotation_text=f"Global average: {global_avg}", 
+                annotation_position="bottom right")
+
+    # 5. Thiết lập bố cục (Layout)
+    fig.update_layout(
+        xaxis_title='Average CVD',
+        yaxis_title=None,
+        xaxis=dict(range=[0, 80], showgrid=True, gridcolor='rgba(0,0,0,0.1)'),
+        plot_bgcolor='white',
+        coloraxis_showscale=False, # Ẩn thanh màu bên cạnh nếu không cần thiết
+        margin=dict(l=20, r=20, t=60, b=20),
+        height=500
+    )
+
+    # 6. Hiển thị lên Streamlit
+    st.plotly_chart(fig, use_container_width=True)
 
     # Feature Importance — RF & XGBoost side by side (bar chart)
     st.markdown('<div class="section-title">Characteristic Importance</div>', unsafe_allow_html=True)
-
-    rf_imp  = [0.00378944, 0.06451446, 0.44498126, 0.24994588, 0.12873835, 0.09088146, 0.01522668, 0.00192247]
-    xgb_imp = [0.03188968, 0.11535992, 0.2500725,  0.23829542, 0.13508256, 0.11364076, 0.06017521, 0.05548387]
 
     col1, col2 = st.columns(2)
     for col, imp, title, cmap_name in [
@@ -562,26 +929,69 @@ elif page == "📈 Visualization":
         (col2, xgb_imp, 'XGBoost',       'RdPu'),
     ]:
         with col:
-            fig, ax = plt.subplots(figsize=(6, 4.5))
-            sorted_idx = np.argsort(imp)
-            sorted_imp = [imp[i] for i in sorted_idx]
-            sorted_lbl = [LABELS_VI[i] for i in sorted_idx]
-            cmap = plt.get_cmap(cmap_name)
-            norm2 = plt.Normalize(min(sorted_imp), max(sorted_imp))
-            bc = [cmap(norm2(v)*0.7+0.25) for v in sorted_imp]
-            bars = ax.barh(sorted_lbl, sorted_imp, color=bc, height=0.6,
-                           edgecolor='white', linewidth=0.5)
-            for bar, val in zip(bars, sorted_imp):
-                ax.text(val+0.003, bar.get_y()+bar.get_height()/2,
-                        f'{val*100:.2f}%', va='center', ha='left',
-                        fontsize=9, fontweight='600', color='#212529')
-            ax.set_xlabel('Feature Importance', fontsize=10)
-            ax.set_title(f'Feature Importance\n({title})', fontsize=10.5,
-                         fontweight='bold', color='#212529', pad=10)
-            ax.set_xlim(0, max(sorted_imp)*1.2)
-            ax.spines['top'].set_visible(False); ax.spines['right'].set_visible(False)
-            ax.grid(True, axis='x', alpha=0.4)
-            fig.tight_layout(); st.pyplot(fig); plt.close()
+            # fig, ax = plt.subplots(figsize=(6, 4.5))
+            # sorted_idx = np.argsort(imp)
+            # sorted_imp = [imp[i] for i in sorted_idx]
+            # sorted_lbl = [LABELS_VI[i] for i in sorted_idx]
+            # cmap = plt.get_cmap(cmap_name)
+            # norm2 = plt.Normalize(min(sorted_imp), max(sorted_imp))
+            # bc = [cmap(norm2(v)*0.7+0.25) for v in sorted_imp]
+            # bars = ax.barh(sorted_lbl, sorted_imp, color=bc, height=0.6,
+            #                edgecolor='white', linewidth=0.5)
+            # for bar, val in zip(bars, sorted_imp):
+            #     ax.text(val+0.003, bar.get_y()+bar.get_height()/2,
+            #             f'{val*100:.2f}%', va='center', ha='left',
+            #             fontsize=9, fontweight='600', color='#212529')
+            # ax.set_xlabel('Feature Importance', fontsize=10)
+            # ax.set_title(f'Feature Importance\n({title})', fontsize=10.5,
+            #              fontweight='bold', color='#212529', pad=10)
+            # ax.set_xlim(0, max(sorted_imp)*1.2)
+            # ax.spines['top'].set_visible(False); ax.spines['right'].set_visible(False)
+            # ax.grid(True, axis='x', alpha=0.4)
+            # fig.tight_layout()
+            # # st.pyplot(fig)
+            # st.plotly_chart(fig)
+            # plt.close()
+            # 1. Chuẩn bị dữ liệu (Sắp xếp lại giống logic sorted_idx của chủ nhân)
+# Giả sử imp và LABELS_VI là các list dữ liệu của chủ nhân
+            df_imp = pd.DataFrame({
+                'Feature': LABELS_VI,
+                'Importance': imp
+            }).sort_values('Importance', ascending=True)
+
+            # 2. Vẽ biểu đồ bằng Plotly
+            fig = px.bar(df_imp, 
+                        x='Importance', 
+                        y='Feature', 
+                        orientation='h',
+                        text='Importance', # Hiển thị giá trị phần trăm
+                        title=f'Feature Importance<br>({title})',
+                        color='Importance',
+                        color_continuous_scale='Viridis') # Hoặc dùng cmap_name nếu Plotly có hỗ trợ
+
+            # 3. Tinh chỉnh định dạng số và nhãn
+            fig.update_traces(
+                texttemplate='%{text:.2%}', # Chuyển số thập phân thành dạng 12.34%
+                textposition='outside',
+                marker_line_color='white',
+                marker_line_width=0.5,
+                hovertemplate='<b>%{y}</b><br>Feature importance: %{x:.2%}'
+            )
+
+            # 4. Thiết lập bố cục (Layout)
+            fig.update_layout(
+                xaxis_title='Feature Importance',
+                yaxis_title=None,
+                xaxis=dict(range=[0, max(imp)*1.2], showgrid=True, gridcolor='rgba(0,0,0,0.1)'),
+                plot_bgcolor='black',
+                coloraxis_showscale=False, # Ẩn thanh màu bên cạnh
+                title_font=dict(size=14, color='#212529', family="Arial Black"),
+                margin=dict(l=20, r=20, t=60, b=20),
+                height=500
+            )
+
+            # 5. Hiển thị lên Streamlit
+            st.plotly_chart(fig, use_container_width=True)
 
     # Factor Groups pie
     st.markdown('<div class="section-title">Factor Group Analysis</div>', unsafe_allow_html=True)
@@ -600,21 +1010,62 @@ elif page == "📈 Visualization":
 
     col1, col2 = st.columns([1, 2])
     with col1:
-        fig, ax = plt.subplots(figsize=(5, 5))
-        wedges, _, autotexts = ax.pie(
-            group_vals.values(), labels=None,
-            autopct='%1.2f%%', colors=['#4361EE','#F72585','#7209B7'],
-            startangle=90, pctdistance=0.68,
-            wedgeprops=dict(linewidth=2.5, edgecolor='#F8F9FA')
+        # fig, ax = plt.subplots(figsize=(5, 5))
+        # wedges, _, autotexts = ax.pie(
+        #     group_vals.values(), labels=None,
+        #     autopct='%1.2f%%', colors=['#4361EE','#F72585','#7209B7'],
+        #     startangle=90, pctdistance=0.68,
+        #     wedgeprops=dict(linewidth=2.5, edgecolor='#F8F9FA')
+        # )
+        # for at in autotexts:
+        #     at.set_fontsize(11); at.set_fontweight('bold'); at.set_color('white')
+        # ax.legend(list(group_vals.keys()), loc='lower center',
+        #           bbox_to_anchor=(0.5, -0.3), ncol=1, fontsize=9,
+        #           framealpha=0, labelcolor='#212529')
+        # ax.set_title('Contribution by Group \n(XGBoost)', fontsize=10.5,
+        #              fontweight='bold', color='#212529', pad=14)
+        # fig.tight_layout()
+        # # st.pyplot(fig)
+        # st.plotly_chart(fig)
+        # plt.close()
+        # 1. Chuẩn bị dữ liệu từ dictionary group_vals
+        labels = list(group_vals.keys())
+        values = list(group_vals.values())
+
+        # 2. Vẽ biểu đồ bằng Plotly
+        fig = px.pie(
+            names=labels, 
+            values=values,
+            title='Contribution by Group<br>(XGBoost)',
+            color_discrete_sequence=['#4361EE', '#F72585', '#7209B7'] # Giữ đúng bộ màu của chủ nhân
         )
-        for at in autotexts:
-            at.set_fontsize(11); at.set_fontweight('bold'); at.set_color('white')
-        ax.legend(list(group_vals.keys()), loc='lower center',
-                  bbox_to_anchor=(0.5, -0.3), ncol=1, fontsize=9,
-                  framealpha=0, labelcolor='#212529')
-        ax.set_title('Contribution by Group \n(XGBoost)', fontsize=10.5,
-                     fontweight='bold', color='#212529', pad=14)
-        fig.tight_layout(); st.pyplot(fig); plt.close()
+
+        # 3. Tinh chỉnh hiển thị (giống các thiết lập wedges và autotexts)
+        fig.update_traces(
+            textinfo='percent', # Chỉ hiện phần trăm (giống autopct='%1.2f%%')
+            textfont_size=14,
+            textfont_color='white',
+            marker=dict(line=dict(color='#F8F9FA', width=2.5)), # Giống wedgeprops
+            hovertemplate="<b>%{label}</b><br>Tỷ lệ: %{percent:.2%}<br>Giá trị: %{value}<extra></extra>"
+        )
+
+        # 4. Thiết lập bố cục (Layout)
+        fig.update_layout(
+            title_font=dict(size=14, color='#212529', family="Arial Black"),
+            legend=dict(
+                orientation="h",       # Chú thích nằm ngang
+                yanchor="bottom",
+                y=-0.2,                # Đưa chú thích xuống dưới giống bbox_to_anchor
+                xanchor="center",
+                x=0.5
+            ),
+            margin=dict(t=80, b=50, l=20, r=20),
+            width=500,
+            height=550
+        )
+
+        # 5. Hiển thị lên Streamlit
+        st.plotly_chart(fig, use_container_width=True)
 
     with col2:
         for group, val in group_vals.items():
@@ -676,25 +1127,78 @@ elif page == "🤖 Modeling":
     bar_colors  = ['#f87171','#f59e0b','#60a5fa','#60a5fa','#4ade80']
 
     with col1:
-        fig, axes = plt.subplots(1, 2, figsize=(9, 4.5))
-        # R²
-        axes[0].barh(models_list, r2_vals, color=bar_colors, height=0.55)
-        axes[0].set_xlabel('R²', fontsize=9.5); axes[0].set_xlim(0, 1.05)
-        axes[0].axvline(0.8, color=ACCENT, linestyle='--', alpha=0.5, lw=1.2)
-        axes[0].set_title('R² Score', fontsize=10, fontweight='bold', color='#212529')
-        for i, v in enumerate(r2_vals):
-            axes[0].text(v+0.01, i, f'{v:.4f}', va='center', fontsize=8, color='#212529')
-        axes[0].spines['top'].set_visible(False); axes[0].spines['right'].set_visible(False)
-        axes[0].grid(True, axis='x', alpha=0.4)
-        # MSE
-        axes[1].barh(models_list, mse_vals, color=bar_colors, height=0.55)
-        axes[1].set_xlabel('RMSE', fontsize=9.5)
-        axes[1].set_title('Root Mean Squared Error', fontsize=10, fontweight='bold', color='#212529')
-        for i, v in enumerate(mse_vals):
-            axes[1].text(v+5, i, f'{v:.1f}', va='center', fontsize=8, color='#212529')
-        axes[1].spines['top'].set_visible(False); axes[1].spines['right'].set_visible(False)
-        axes[1].grid(True, axis='x', alpha=0.4)
-        fig.tight_layout(); st.pyplot(fig); plt.close()
+        # fig, axes = plt.subplots(1, 2, figsize=(9, 4.5))
+        # # R²
+        # axes[0].barh(models_list, r2_vals, color=bar_colors, height=0.55)
+        # axes[0].set_xlabel('R²', fontsize=9.5); axes[0].set_xlim(0, 1.05)
+        # axes[0].axvline(0.8, color=ACCENT, linestyle='--', alpha=0.5, lw=1.2)
+        # axes[0].set_title('R² Score', fontsize=10, fontweight='bold', color='#212529')
+        # for i, v in enumerate(r2_vals):
+        #     axes[0].text(v+0.01, i, f'{v:.4f}', va='center', fontsize=8, color='#212529')
+        # axes[0].spines['top'].set_visible(False); axes[0].spines['right'].set_visible(False)
+        # axes[0].grid(True, axis='x', alpha=0.4)
+        # # MSE
+        # axes[1].barh(models_list, mse_vals, color=bar_colors, height=0.55)
+        # axes[1].set_xlabel('RMSE', fontsize=9.5)
+        # axes[1].set_title('Root Mean Squared Error', fontsize=10, fontweight='bold', color='#212529')
+        # for i, v in enumerate(mse_vals):
+        #     axes[1].text(v+5, i, f'{v:.1f}', va='center', fontsize=8, color='#212529')
+        # axes[1].spines['top'].set_visible(False); axes[1].spines['right'].set_visible(False)
+        # axes[1].grid(True, axis='x', alpha=0.4)
+        # fig.tight_layout()
+        # # st.pyplot(fig)
+        # st.plotly_chart(fig)
+        # plt.close()
+        # 1. Khởi tạo Subplots với 1 hàng và 2 cột
+        fig = make_subplots(rows=1, cols=2, 
+                            subplot_titles=("R² Score", "Root Mean Squared Error"),
+                            horizontal_spacing=0.15)
+
+        # 2. Thêm biểu đồ R² vào cột 1
+        fig.add_trace(
+            go.Bar(
+                x=r2_vals,
+                y=models_list,
+                orientation='h',
+                marker_color=bar_colors,
+                text=[f'{v:.4f}' for v in r2_vals],
+                textposition='outside',
+                name='R²'
+            ),
+            row=1, col=1
+        )
+
+        # 3. Thêm biểu đồ RMSE vào cột 2
+        fig.add_trace(
+            go.Bar(
+                x=mse_vals,
+                y=models_list,
+                orientation='h',
+                marker_color=bar_colors,
+                text=[f'{v:.1f}' for v in mse_vals],
+                textposition='outside',
+                name='RMSE'
+            ),
+            row=1, col=2
+        )
+
+        # 4. Tinh chỉnh Layout và các đường kẻ phụ (Reference lines)
+        fig.update_layout(
+            height=450,
+            showlegend=False,
+            plot_bgcolor='white',
+            margin=dict(t=80, b=40, l=20, r=20)
+        )
+
+        # Thêm đường kẻ nét đứt R² = 0.8 tại cột 1
+        fig.add_vline(x=0.8, line_dash="dash", line_color=ACCENT, opacity=0.5, row=1, col=1)
+
+        # Định dạng trục X cho cả hai biểu đồ
+        fig.update_xaxes(title_text="R²", range=[0, 1.1], row=1, col=1, gridcolor='rgba(0,0,0,0.1)')
+        fig.update_xaxes(title_text="RMSE", row=1, col=2, gridcolor='rgba(0,0,0,0.1)')
+
+        # 5. Hiển thị lên Streamlit
+        st.plotly_chart(fig, use_container_width=True)
 
     with col2:
     # Hiển thị ảnh Actual vs Predicted — XGBoost
@@ -828,3 +1332,98 @@ GROUP BY nhom_cvd ORDER BY tb_cvd_nhom""",
                 st.error(f"Query error: {e}")
 
     conn_sql.close()
+
+#### Project architecture
+elif page == "🏗️ Project Architecture":
+    st.markdown('<div class="section-title">End-to-End Pipeline Architecture</div>', unsafe_allow_html=True)
+    
+    # Sử dụng Graphviz để vẽ sơ đồ luồng dữ liệu (Data Flow)
+    st.graphviz_chart('''
+        digraph {
+            node [shape=box, style=filled, color="#1a1f2e", fontcolor="#e8eaf0", fontname="IBM Plex Sans"]
+            edge [color="#e05c5c"]
+            
+            subgraph cluster_0 {
+                label = "Data Source";
+                color="#2a2f3e";
+                fontcolor="#8b90a0";
+                "WHO GHO API" -> "SQLite DB (sample_v4.db)"
+            }
+            
+            subgraph cluster_1 {
+                label = "Preprocessing (Cleaning)";
+                color="#2a2f3e";
+                fontcolor="#8b90a0";
+                "SQLite DB (sample_v4.db)" -> "Missing Imputation"
+                "Missing Imputation" -> "Log Transform"
+                "Log Transform" -> "IQR Outlier Removal"
+                "IQR Outlier Removal" -> "Standard Scaling"
+            }
+            
+            subgraph cluster_2 {
+                label = "Modeling & Evaluation";
+                color="#2a2f3e";
+                fontcolor="#8b90a0";
+                "Standard Scaling" -> "Linear Regression"
+                "Standard Scaling" -> "Tree-based Models"
+                "Tree-based Models" -> "XGBoost (Champion)"
+            }
+            
+            "XGBoost (Champion)" -> "Streamlit Dashboard" [label="Inference"]
+        }
+    ''')
+
+    st.markdown("""
+    <div class="insight-box">
+        <strong>Thuật ngữ hệ thống (System Terms):</strong><br>
+        * <strong>Data Pipeline</strong>: Quy trình tự động hóa việc thu thập và xử lý dữ liệu.<br>
+        * <strong>Inference Engine</strong>: Bộ máy sử dụng mô hình đã huấn luyện để đưa ra dự báo thực tế.
+    </div>""", unsafe_allow_html=True)
+
+# Sơ đồ Live Predictor
+# elif page == "🔮 Live Predictor":
+#     st.markdown('<div class="section-title">Interactive CVD Risk Prediction</div>', unsafe_allow_html=True)
+    
+#     col1, col2 = st.columns([1, 1])
+    
+#     with col1:
+#         st.markdown("### 🛠️ Input Health Metrics")
+#         # Tạo các thanh trượt nhập liệu dựa trên đặc trưng của mô hình
+#         val_bmi = st.slider("Chỉ số BMI (Body Mass Index)", 15.0, 100.0, 24.0)
+#         val_chol = st.slider("Cholesterol (mmol/L)", 2.0, 8.0, 5.0)
+#         val_glu = st.slider("Glucose (Huyết đường)", 3.0, 15.0, 5.5)
+#         val_diabete = st.slider("Diabete", 0, 66, 1)
+#         val_smoke = st.slider("Sử dụng thuốc lá (Tobacco)", 0, 100, 20)
+#         val_physic = st.slider("Physical activity", 0, 100, 20)
+#         val_alc = st.slider("Tiêu thụ rượu bia (Alcohol)", 0.0, 20.0, 5.0)
+#         val_poll = st.slider("Ô nhiễm không khí (Air Pollution)", 0.0, 100.0, 25.0)
+
+#     with col2:
+#         st.markdown("### 📈 Prediction Result")
+#         # Giả lập logic dự báo (Chủ nhân có thể thay bằng model.predict thực tế)
+#         # Lưu ý: Trong thực tế cần StandardScaler.transform() dữ liệu này trước
+#         # base_risk = 35.0
+#         # calculated_risk = base_risk + (val_bmi * 0.2) + (val_chol * 0.5) + (val_smoke * 5.0)
+#         calculated_risk = 0
+#         xgboost = models["XGBoost"]
+        
+#         # feature_names = ['air_pollution','alcohol_consumption','BMI','cholesterol',
+#         #              'diabetes','glucose','physical_activities','tobacco']
+#         X_test = np.array([[val_poll, val_smoke, val_bmi, val_chol, val_diabete, val_glu, val_physic, val_smoke]])
+#         predict = xgboost.predict(X_test)
+#         calculated_risk = predict[0]
+#         print(X_test, calculated_risk)
+
+#         # Hiển thị kết quả bằng metric card
+#         st.markdown(f"""
+#         <div class="metric-card" style="background: #1e2536; border: 2px solid #e05c5c;">
+#             <div class="metric-label">Estimated CVD Risk Score</div>
+#             <div class="metric-value" style="color:#e05c5c;">{calculated_risk:.2f}%</div>
+#             <div class="metric-sub">Dựa trên thuật toán XGBoost</div>
+#         </div>
+#         """, unsafe_allow_html=True)
+        
+#         if calculated_risk > 50:
+#             st.warning("⚠️ Cảnh báo: Nguy cơ mắc bệnh tim mạch ở mức Cao.")
+#         else:
+#             st.success("✅ Tuyệt vời: Các chỉ số đang ở ngưỡng an toàn.")
