@@ -780,7 +780,7 @@ elif page == "🔍 EDA":
 
     st.markdown('<div class="section-title">Preprocessing Pipeline</div>', unsafe_allow_html=True)
     steps = [
-        ("01","Lọc 2010–2015","TimeDim BETWEEN 2010 AND 2015 → 10.956 bản ghi"),
+        ("01","Lọc 2010–2015","TimeDim BETWEEN 2010 AND 2015 → 10.956 records"),
         ("02","Remove Infrastructure Features","x7 has 77.09% missing values → excluded from the feature set"),
         ("03","Missing Value Imputation","air_pollution (0.60%) and alcohol (2.02%) → imputed using column mean"),
         ("04","Log transform","air_pollution → log1p() transformation to reduce right skewness"),
